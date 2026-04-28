@@ -34,3 +34,7 @@ Each trial shows a network diagram and asks one of three question types:
 - If anything is unclear, click the **?** button at any time.
 
 Click **Next** when you are ready to begin.
+
+---
+
+*Study conducted by **Velitchko Filipov** · TU Wien · [velitchko.filipov@tuwien.ac.at](mailto:velitchko.filipov@tuwien.ac.at)*

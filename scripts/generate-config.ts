@@ -308,7 +308,7 @@ const config = {
     title: 'To Link or Not',
     version: '1.0.0',
     authors: ['Velitchko Filipov'],
-    date: '2026-04-22',
+    date: '2026-04-28',
     description: 'How does link visibility affect cognitive maps of node-link diagrams?',
     organizations: ['TU Wien'],
   },
