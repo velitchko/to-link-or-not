@@ -1,0 +1,212 @@
+{
+  "id": "pool-d-g13",
+  "nodes": [
+    {
+      "id": "hub",
+      "label": "H"
+    },
+    {
+      "id": "a0",
+      "label": "A0"
+    },
+    {
+      "id": "a1",
+      "label": "A1"
+    },
+    {
+      "id": "a2",
+      "label": "A2"
+    },
+    {
+      "id": "a3",
+      "label": "A3"
+    },
+    {
+      "id": "a4",
+      "label": "A4"
+    },
+    {
+      "id": "b0",
+      "label": "B0"
+    },
+    {
+      "id": "b1",
+      "label": "B1"
+    },
+    {
+      "id": "b2",
+      "label": "B2"
+    },
+    {
+      "id": "b3",
+      "label": "B3"
+    },
+    {
+      "id": "b4",
+      "label": "B4"
+    },
+    {
+      "id": "b5",
+      "label": "B5"
+    }
+  ],
+  "edges": [
+    {
+      "source": "a0",
+      "target": "a1"
+    },
+    {
+      "source": "a0",
+      "target": "a3"
+    },
+    {
+      "source": "a0",
+      "target": "a4"
+    },
+    {
+      "source": "a1",
+      "target": "a3"
+    },
+    {
+      "source": "a2",
+      "target": "a3"
+    },
+    {
+      "source": "a2",
+      "target": "a4"
+    },
+    {
+      "source": "a3",
+      "target": "a4"
+    },
+    {
+      "source": "b0",
+      "target": "b1"
+    },
+    {
+      "source": "b0",
+      "target": "b2"
+    },
+    {
+      "source": "b0",
+      "target": "b3"
+    },
+    {
+      "source": "b0",
+      "target": "b5"
+    },
+    {
+      "source": "b1",
+      "target": "b2"
+    },
+    {
+      "source": "b1",
+      "target": "b4"
+    },
+    {
+      "source": "b1",
+      "target": "b5"
+    },
+    {
+      "source": "b2",
+      "target": "b3"
+    },
+    {
+      "source": "b2",
+      "target": "b4"
+    },
+    {
+      "source": "b3",
+      "target": "b4"
+    },
+    {
+      "source": "b3",
+      "target": "b5"
+    },
+    {
+      "source": "b4",
+      "target": "b5"
+    },
+    {
+      "source": "hub",
+      "target": "a0"
+    },
+    {
+      "source": "hub",
+      "target": "a1"
+    },
+    {
+      "source": "hub",
+      "target": "a2"
+    },
+    {
+      "source": "hub",
+      "target": "a3"
+    },
+    {
+      "source": "hub",
+      "target": "a4"
+    },
+    {
+      "source": "hub",
+      "target": "b0"
+    },
+    {
+      "source": "hub",
+      "target": "b1"
+    },
+    {
+      "source": "hub",
+      "target": "b2"
+    },
+    {
+      "source": "hub",
+      "target": "b3"
+    },
+    {
+      "source": "hub",
+      "target": "b4"
+    },
+    {
+      "source": "hub",
+      "target": "b5"
+    },
+    {
+      "source": "a0",
+      "target": "b2"
+    }
+  ],
+  "groundTruth": {
+    "T1": {
+      "answer": "hub",
+      "rationale": "Hub node connected to all 11 other nodes"
+    },
+    "T2": {
+      "nodeA": "a0",
+      "nodeB": "b0",
+      "commonNeighbors": [
+        "hub"
+      ]
+    },
+    "T3": {
+      "communities": [
+        [
+          "a0",
+          "a1",
+          "a2",
+          "a3",
+          "a4"
+        ],
+        [
+          "b0",
+          "b1",
+          "b2",
+          "b3",
+          "b4",
+          "b5"
+        ]
+      ]
+    }
+  },
+  "stubLengthFraction": 0.25
+}

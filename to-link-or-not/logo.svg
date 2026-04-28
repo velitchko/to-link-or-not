@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" width="220" height="60">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4f46e5"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background pill -->
+  <rect x="0" y="0" width="220" height="60" rx="10" fill="url(#bg)"/>
+
+  <!-- LEFT side: linked graph (3 nodes connected) -->
+  <!-- edges -->
+  <line x1="18" y1="30" x2="34" y2="18" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+  <line x1="18" y1="30" x2="34" y2="42" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+  <line x1="34" y1="18" x2="34" y2="42" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+  <!-- nodes -->
+  <circle cx="18" cy="30" r="5" fill="white" fill-opacity="0.95"/>
+  <circle cx="34" cy="18" r="5" fill="white" fill-opacity="0.95"/>
+  <circle cx="34" cy="42" r="5" fill="white" fill-opacity="0.95"/>
+
+  <!-- Divider slash -->
+  <text x="46" y="38" font-family="Georgia, serif" font-size="22" fill="white" fill-opacity="0.5" font-style="italic">/</text>
+
+  <!-- RIGHT side: unlinked graph (same layout, no edges) -->
+  <circle cx="60" cy="30" r="5" fill="white" fill-opacity="0.5"/>
+  <circle cx="76" cy="18" r="5" fill="white" fill-opacity="0.5"/>
+  <circle cx="76" cy="42" r="5" fill="white" fill-opacity="0.5"/>
+
+  <!-- Study title -->
+  <text x="92" y="24" font-family="system-ui, sans-serif" font-size="11" fill="white" fill-opacity="0.75" font-weight="400" letter-spacing="0.5">TO LINK OR NOT</text>
+  <text x="92" y="42" font-family="system-ui, sans-serif" font-size="10" fill="white" fill-opacity="0.55" font-weight="300">Node-Link Diagram Study</text>
+</svg>
