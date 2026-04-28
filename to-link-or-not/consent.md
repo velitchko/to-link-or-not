@@ -2,7 +2,7 @@
 
 **Study Title:** To Link or Not — Evaluating Link-Rendering Strategies in Node-Link Diagrams
 
-**Principal Investigator:** [Researcher Name], [Institution]
+**Principal Investigator:** Velitchko Filipov, TU Wien
 
 ## Purpose
 
@@ -33,9 +33,11 @@ Each diagram will be shown using one of four different visual styles. You will s
 
 ## Contact
 
-If you have questions about this study, contact: [researcher-email@institution.edu]
+If you have questions about this study, contact: [velitchko.filipov@tuwien.ac.at](mailto:velitchko.filipov@tuwien.ac.at)
 
-For questions about your rights as a research participant, contact the IRB at: [irb@institution.edu]
+**Velitchko Filipov**
+Research Unit of Visual Computing and Human-Centered Technology
+TU Wien, Vienna, Austria
 
 ---
 

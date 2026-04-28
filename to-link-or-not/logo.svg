@@ -1,33 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" width="220" height="60">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4f46e5"/>
       <stop offset="100%" style="stop-color:#7c3aed"/>
     </linearGradient>
   </defs>
 
-  <!-- Background pill -->
-  <rect x="0" y="0" width="220" height="60" rx="10" fill="url(#bg)"/>
+  <!-- Background -->
+  <rect x="0" y="0" width="80" height="80" rx="12" fill="url(#bg)"/>
 
-  <!-- LEFT side: linked graph (3 nodes connected) -->
-  <!-- edges -->
-  <line x1="18" y1="30" x2="34" y2="18" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
-  <line x1="18" y1="30" x2="34" y2="42" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
-  <line x1="34" y1="18" x2="34" y2="42" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
-  <!-- nodes -->
-  <circle cx="18" cy="30" r="5" fill="white" fill-opacity="0.95"/>
-  <circle cx="34" cy="18" r="5" fill="white" fill-opacity="0.95"/>
-  <circle cx="34" cy="42" r="5" fill="white" fill-opacity="0.95"/>
+  <!-- Peripheral edges (lighter) -->
+  <line x1="40" y1="13" x2="64" y2="27" stroke="white" stroke-width="1.5" stroke-opacity="0.35"/>
+  <line x1="62" y1="54" x2="40" y2="66" stroke="white" stroke-width="1.5" stroke-opacity="0.35"/>
+  <line x1="16" y1="27" x2="18" y2="54" stroke="white" stroke-width="1.5" stroke-opacity="0.35"/>
 
-  <!-- Divider slash -->
-  <text x="46" y="38" font-family="Georgia, serif" font-size="22" fill="white" fill-opacity="0.5" font-style="italic">/</text>
+  <!-- Hub edges -->
+  <line x1="40" y1="40" x2="40" y2="13" stroke="white" stroke-width="1.8" stroke-opacity="0.65"/>
+  <line x1="40" y1="40" x2="64" y2="27" stroke="white" stroke-width="1.8" stroke-opacity="0.65"/>
+  <line x1="40" y1="40" x2="62" y2="54" stroke="white" stroke-width="1.8" stroke-opacity="0.65"/>
+  <line x1="40" y1="40" x2="40" y2="66" stroke="white" stroke-width="1.8" stroke-opacity="0.65"/>
+  <line x1="40" y1="40" x2="16" y2="27" stroke="white" stroke-width="1.8" stroke-opacity="0.65"/>
+  <line x1="40" y1="40" x2="18" y2="54" stroke="white" stroke-width="1.8" stroke-opacity="0.65"/>
 
-  <!-- RIGHT side: unlinked graph (same layout, no edges) -->
-  <circle cx="60" cy="30" r="5" fill="white" fill-opacity="0.5"/>
-  <circle cx="76" cy="18" r="5" fill="white" fill-opacity="0.5"/>
-  <circle cx="76" cy="42" r="5" fill="white" fill-opacity="0.5"/>
+  <!-- Peripheral nodes -->
+  <circle cx="40" cy="13" r="5" fill="white" fill-opacity="0.85"/>
+  <circle cx="64" cy="27" r="5" fill="white" fill-opacity="0.85"/>
+  <circle cx="62" cy="54" r="5" fill="white" fill-opacity="0.85"/>
+  <circle cx="40" cy="66" r="5" fill="white" fill-opacity="0.85"/>
+  <circle cx="16" cy="27" r="5" fill="white" fill-opacity="0.85"/>
+  <circle cx="18" cy="54" r="5" fill="white" fill-opacity="0.85"/>
 
-  <!-- Study title -->
-  <text x="92" y="24" font-family="system-ui, sans-serif" font-size="11" fill="white" fill-opacity="0.75" font-weight="400" letter-spacing="0.5">TO LINK OR NOT</text>
-  <text x="92" y="42" font-family="system-ui, sans-serif" font-size="10" fill="white" fill-opacity="0.55" font-weight="300">Node-Link Diagram Study</text>
+  <!-- Hub node (larger, full opacity) -->
+  <circle cx="40" cy="40" r="8" fill="white" fill-opacity="0.97"/>
 </svg>
