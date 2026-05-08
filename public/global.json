@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.4.1/src/parser/GlobalConfigSchema.json",
   "configsList": [
-    "to-link-or-not"
+    "study"
   ],
   "configs": {
-    "to-link-or-not": {
+    "study": {
       "path": "to-link-or-not/config.json"
     }
   }
