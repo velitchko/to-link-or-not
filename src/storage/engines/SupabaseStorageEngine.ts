@@ -666,7 +666,7 @@ export class SupabaseStorageEngine extends CloudStorageEngine {
       .select('data')
       .eq('studyId', '')
       .eq('docId', 'user-management')
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error(`Error fetching user management data for key ${key}:`, error);
@@ -703,7 +703,7 @@ export class SupabaseStorageEngine extends CloudStorageEngine {
         studyId: '',
         docId: 'user-management',
         data: updatedData,
-      });
+      }, { onConflict: 'studyId,docId' });
 
     if (error) {
       console.error('Error updating admin users list:', error);
@@ -722,7 +722,7 @@ export class SupabaseStorageEngine extends CloudStorageEngine {
         studyId: '',
         docId: 'user-management',
         data: updatedData,
-      });
+      }, { onConflict: 'studyId,docId' });
 
     if (error) {
       console.error('Error changing authentication state:', error);
