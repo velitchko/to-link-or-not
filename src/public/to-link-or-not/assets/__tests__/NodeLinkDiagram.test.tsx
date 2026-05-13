@@ -1,8 +1,10 @@
 // src/public/to-link-or-not/assets/__tests__/NodeLinkDiagram.test.tsx
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import {
-  describe, it, expect, vi,
+  render, screen, fireEvent, act,
+} from '@testing-library/react';
+import {
+  describe, it, expect, vi, beforeEach,
 } from 'vitest';
 import NodeLinkDiagram from '../NodeLinkDiagram';
 import { StudyParameters } from '../types';
@@ -11,6 +13,34 @@ import { StudyParameters } from '../types';
 vi.mock('../hooks/useForceLayout', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useForceLayout: (nodes: any[]) => nodes.map((n: any, i: number) => ({ ...n, x: i * 100 + 50, y: 150 })),
+}));
+
+// Capture the lasso completion callback so tests can trigger it directly
+let capturedLassoComplete: ((ids: string[], additive: boolean) => void) | null = null;
+
+vi.mock('../hooks/useZoomPan', () => ({
+  useZoomPan: () => ({
+    contentRef: { current: null },
+    transformRef: {
+      current: {
+        apply: (p: [number, number]) => p, k: 1, x: 0, y: 0,
+      },
+    },
+    resetZoom: vi.fn(),
+  }),
+}));
+
+vi.mock('../hooks/useLasso', () => ({
+  useLasso: (
+    _svgRef: unknown,
+    _transformRef: unknown,
+    _nodes: unknown,
+    _mode: unknown,
+    onLassoComplete: (ids: string[], additive: boolean) => void,
+  ) => {
+    capturedLassoComplete = onLassoComplete;
+    return { lassoPolygon: null, isLassoing: false };
+  },
 }));
 
 const graph: StudyParameters['graph'] = {
@@ -39,6 +69,10 @@ const makeParams = (task: StudyParameters['task'], condition: StudyParameters['c
 });
 
 describe('NodeLinkDiagram', () => {
+  beforeEach(() => {
+    capturedLassoComplete = null;
+  });
+
   it('renders a circle for each node', () => {
     const setAnswer = vi.fn();
     const { container } = render(
@@ -112,5 +146,105 @@ describe('NodeLinkDiagram', () => {
     // Only n2 should be in the answer (anchors were not selectable)
     expect(JSON.parse(call.answers['task-answer'])).toEqual(['n2']);
     expect(call.answers.isCorrect).toBe(true);
+  });
+
+  it('renders the InteractionStrip with mode buttons', () => {
+    render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    expect(screen.getByRole('button', { name: /^Select$/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /lasso/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /pan/i })).toBeInTheDocument();
+  });
+
+  it('Select mode button is active by default', () => {
+    render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    expect(screen.getByRole('button', { name: /^Select$/i })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('switching to Lasso mode marks Lasso as active', () => {
+    render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /lasso/i }));
+    expect(screen.getByRole('button', { name: /lasso/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: /^Select$/i })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('Reset Selection button clears selected nodes', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.click(n2);
+    expect(n2.getAttribute('fill')).toBe('#10b981');
+    fireEvent.click(screen.getByRole('button', { name: /reset selection/i }));
+    expect(n2.getAttribute('fill')).toBe('#4f46e5');
+  });
+
+  it('lasso completion (non-additive) replaces selection', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.click(n2);
+    expect(n2.getAttribute('fill')).toBe('#10b981');
+
+    act(() => { capturedLassoComplete!(['n3'], false); });
+
+    expect(n2.getAttribute('fill')).toBe('#4f46e5');
+    const n3 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n3')!;
+    expect(n3.getAttribute('fill')).toBe('#10b981');
+  });
+
+  it('lasso completion with Ctrl adds to existing selection', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const n1 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    fireEvent.click(n1);
+    expect(n1.getAttribute('fill')).toBe('#10b981');
+
+    act(() => { capturedLassoComplete!(['n2'], true); });
+
+    expect(n1.getAttribute('fill')).toBe('#10b981');
+    const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    expect(n2.getAttribute('fill')).toBe('#10b981');
+  });
+
+  it('node click is ignored when mode is not select', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /pan/i }));
+    const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.click(n2);
+    expect(n2.getAttribute('fill')).toBe('#4f46e5');
+  });
+
+  it('lasso skips anchor nodes (T2)', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    act(() => { capturedLassoComplete!(['n1', 'n2', 'n3'], false); });
+
+    const n1 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    const n3 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n3')!;
+
+    expect(n1.getAttribute('fill')).toBe('#f59e0b');
+    expect(n2.getAttribute('fill')).toBe('#10b981');
+    expect(n3.getAttribute('fill')).toBe('#f59e0b');
   });
 });
