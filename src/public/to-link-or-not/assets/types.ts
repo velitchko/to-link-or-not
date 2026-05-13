@@ -1,5 +1,6 @@
 export type Condition = 'traditional' | 'no-link' | 'on-demand' | 'stubs';
 export type TaskType = 'T1' | 'T2' | 'T3';
+export type InteractionMode = 'select' | 'lasso' | 'pan';
 
 export interface GraphNode {
   id: string;
