@@ -58,7 +58,8 @@ export default function NodeLinkDiagram({
   const [submitted, setSubmitted] = useState(false);
   const [mode, setMode] = useState<InteractionMode>('select');
   const [feedbackMap, setFeedbackMap] = useState<Partial<Record<string, FeedbackColor>>>({});
-  const [_trainingCorrect, setTrainingCorrect] = useState<boolean | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [trainingCorrect, setTrainingCorrect] = useState<boolean | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
