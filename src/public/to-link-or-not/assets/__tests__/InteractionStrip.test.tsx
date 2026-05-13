@@ -17,6 +17,7 @@ const defaultProps = {
   onModeChange: vi.fn(),
   onResetZoom: vi.fn(),
   onResetSelection: vi.fn(),
+  ctrlEnabled: true,
 };
 
 describe('InteractionStrip', () => {
@@ -68,6 +69,12 @@ describe('InteractionStrip', () => {
 
   it('Ctrl+click badge is dimmed in lasso mode', () => {
     render(<InteractionStrip {...defaultProps} mode="lasso" />);
+    const badge = screen.getByText(/ctrl \+ click/i).closest('div')!;
+    expect(badge.style.opacity).toBe('0.4');
+  });
+
+  it('Ctrl+click badge is dimmed when ctrlEnabled is false', () => {
+    render(<InteractionStrip {...defaultProps} ctrlEnabled={false} />);
     const badge = screen.getByText(/ctrl \+ click/i).closest('div')!;
     expect(badge.style.opacity).toBe('0.4');
   });

@@ -201,6 +201,7 @@ export default function NodeLinkDiagram({
         onModeChange={setMode}
         onResetZoom={resetZoom}
         onResetSelection={() => setSelectedNodes([])}
+        ctrlEnabled={task !== 'T1'}
       />
 
       <svg

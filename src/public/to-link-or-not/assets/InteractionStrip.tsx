@@ -12,6 +12,7 @@ interface InteractionStripProps {
   onModeChange: (mode: InteractionMode) => void;
   onResetZoom: () => void;
   onResetSelection: () => void;
+  ctrlEnabled: boolean;
 }
 
 export function InteractionStrip({
@@ -19,6 +20,7 @@ export function InteractionStrip({
   onModeChange,
   onResetZoom,
   onResetSelection,
+  ctrlEnabled,
 }: InteractionStripProps) {
   const btnBase: React.CSSProperties = {
     alignItems: 'center',
@@ -108,7 +110,7 @@ export function InteractionStrip({
           color: '#92400e',
           fontSize: '11px',
           marginLeft: 'auto',
-          opacity: mode === 'select' ? 1 : 0.4,
+          opacity: mode === 'select' && ctrlEnabled ? 1 : 0.4,
           padding: '3px 8px',
         }}
       >
