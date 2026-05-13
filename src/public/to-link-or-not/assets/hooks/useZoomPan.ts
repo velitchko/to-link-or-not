@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 
 export interface ZoomPanResult {
-  contentRef: React.RefObject<SVGGElement>;
+  contentRef: React.RefObject<SVGGElement | null>;
   transformRef: React.MutableRefObject<d3.ZoomTransform>;
   resetZoom: () => void;
 }
@@ -11,8 +11,7 @@ export function useZoomPan(
   svgRef: React.RefObject<SVGSVGElement>,
   panEnabled: boolean,
 ): ZoomPanResult {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const contentRef = useRef<SVGGElement>(null as any);
+  const contentRef = useRef<SVGGElement | null>(null);
   const transformRef = useRef<d3.ZoomTransform>(d3.zoomIdentity);
   const zoomRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   // Use a ref so the filter closure always reads the latest value without re-attaching zoom
