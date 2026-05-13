@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type RefObject,
+  type MutableRefObject,
+} from 'react';
 import * as d3 from 'd3';
 import { PositionedNode, InteractionMode } from '../types';
 
@@ -22,8 +28,8 @@ export interface LassoResult {
 }
 
 export function useLasso(
-  svgRef: React.RefObject<SVGSVGElement>,
-  transformRef: React.MutableRefObject<d3.ZoomTransform>,
+  svgRef: RefObject<SVGSVGElement>,
+  transformRef: MutableRefObject<d3.ZoomTransform>,
   nodes: PositionedNode[],
   mode: InteractionMode,
   onLassoComplete: (nodeIds: string[], additive: boolean) => void,
@@ -58,7 +64,7 @@ export function useLasso(
     function onMouseMove(event: MouseEvent) {
       if (!activeRef.current) return;
       const [x, y] = d3.pointer(event, svg as SVGSVGElement);
-      polygonRef.current = [...polygonRef.current, [x, y]];
+      polygonRef.current.push([x, y]);
       setLassoPolygon([...polygonRef.current]);
     }
 
@@ -79,12 +85,12 @@ export function useLasso(
 
     svg.addEventListener('mousedown', onMouseDown);
     svg.addEventListener('mousemove', onMouseMove);
-    svg.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('mouseup', onMouseUp);
 
     return () => {
       svg.removeEventListener('mousedown', onMouseDown);
       svg.removeEventListener('mousemove', onMouseMove);
-      svg.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('mouseup', onMouseUp);
     };
   }, [svgRef, transformRef]);
 
