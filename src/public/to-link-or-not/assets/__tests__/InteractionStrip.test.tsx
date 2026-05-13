@@ -1,0 +1,61 @@
+import React from 'react';
+import {
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
+import {
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
+import { InteractionStrip } from '../InteractionStrip';
+
+const defaultProps = {
+  mode: 'select' as const,
+  onModeChange: vi.fn(),
+  onResetZoom: vi.fn(),
+  onResetSelection: vi.fn(),
+};
+
+describe('InteractionStrip', () => {
+  it('renders all three mode buttons', () => {
+    render(<InteractionStrip {...defaultProps} />);
+    expect(screen.getByRole('button', { name: /^select$/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^lasso$/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^pan$/i })).toBeInTheDocument();
+  });
+
+  it('marks the active mode button as pressed', () => {
+    render(<InteractionStrip {...defaultProps} mode="lasso" />);
+    expect(screen.getByRole('button', { name: /^lasso$/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: /^select$/i })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('calls onModeChange with the clicked mode', () => {
+    const onModeChange = vi.fn();
+    render(<InteractionStrip {...defaultProps} onModeChange={onModeChange} />);
+    fireEvent.click(screen.getByRole('button', { name: /^lasso$/i }));
+    expect(onModeChange).toHaveBeenCalledWith('lasso');
+  });
+
+  it('calls onResetZoom when Reset Zoom is clicked', () => {
+    const onResetZoom = vi.fn();
+    render(<InteractionStrip {...defaultProps} onResetZoom={onResetZoom} />);
+    fireEvent.click(screen.getByRole('button', { name: /reset zoom/i }));
+    expect(onResetZoom).toHaveBeenCalledOnce();
+  });
+
+  it('calls onResetSelection when Reset Selection is clicked', () => {
+    const onResetSelection = vi.fn();
+    render(<InteractionStrip {...defaultProps} onResetSelection={onResetSelection} />);
+    fireEvent.click(screen.getByRole('button', { name: /reset selection/i }));
+    expect(onResetSelection).toHaveBeenCalledOnce();
+  });
+
+  it('shows the Ctrl hint', () => {
+    render(<InteractionStrip {...defaultProps} />);
+    expect(screen.getByText(/ctrl/i)).toBeInTheDocument();
+  });
+});
