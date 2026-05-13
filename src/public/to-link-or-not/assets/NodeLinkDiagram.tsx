@@ -58,7 +58,6 @@ export default function NodeLinkDiagram({
   const [submitted, setSubmitted] = useState(false);
   const [mode, setMode] = useState<InteractionMode>('select');
   const [feedbackMap, setFeedbackMap] = useState<Partial<Record<string, FeedbackColor>>>({});
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [trainingCorrect, setTrainingCorrect] = useState<boolean | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -275,12 +274,45 @@ export default function NodeLinkDiagram({
       }}
       >
         {submitted ? (
-          <p style={{
-            margin: 0, color: '#059669', fontSize: '0.875rem', fontWeight: 500,
-          }}
-          >
-            ✓ Answer recorded — click Next to continue.
-          </p>
+          isTraining ? (
+            <>
+              {task === 'T3' && (
+                <p style={{
+                  margin: 0, color: '#1d4ed8', fontSize: '0.875rem', fontWeight: 500,
+                }}
+                >
+                  ℹ Here&apos;s one way to group this network. Colors show suggested communities.
+                </p>
+              )}
+              {task !== 'T3' && trainingCorrect && (
+                <p style={{
+                  margin: 0, color: '#059669', fontSize: '0.875rem', fontWeight: 500,
+                }}
+                >
+                  {task === 'T1'
+                    ? '✓ Correct! This is the most connected node.'
+                    : '✓ Correct! You found all the common neighbors.'}
+                </p>
+              )}
+              {task !== 'T3' && !trainingCorrect && (
+                <p style={{
+                  margin: 0, color: '#b45309', fontSize: '0.875rem', fontWeight: 500,
+                }}
+                >
+                  {task === 'T1'
+                    ? '✗ Not quite. The most connected node is highlighted in gold.'
+                    : '✗ Not quite. Missed nodes are highlighted in gold; incorrect selections are in red.'}
+                </p>
+              )}
+            </>
+          ) : (
+            <p style={{
+              margin: 0, color: '#059669', fontSize: '0.875rem', fontWeight: 500,
+            }}
+            >
+              ✓ Answer recorded — click Next to continue.
+            </p>
+          )
         ) : (
           <>
             <p style={{ margin: 0, color: '#6b7280', fontSize: '0.875rem' }}>

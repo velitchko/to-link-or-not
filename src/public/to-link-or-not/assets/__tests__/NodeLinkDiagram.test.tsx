@@ -313,6 +313,68 @@ describe('NodeLinkDiagram', () => {
     expect(n3.getAttribute('fill')).toBe('#f59e0b');
   });
 
+  describe('training feedback — banner', () => {
+    it('T1 correct training: shows Correct banner', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+        .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n2);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(screen.getByText(/correct/i)).toBeInTheDocument();
+      expect(screen.getByText(/most connected node/i)).toBeInTheDocument();
+    });
+
+    it('T1 wrong training: shows Not quite banner', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const n1 = Array.from(container.querySelectorAll('circle.node-circle'))
+        .find((c) => c.getAttribute('data-node-id') === 'n1')!;
+      fireEvent.click(n1);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(screen.getByText(/not quite/i)).toBeInTheDocument();
+      expect(screen.getByText(/most connected node is highlighted/i)).toBeInTheDocument();
+    });
+
+    it('T2 correct training: shows Correct banner', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+        .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n2);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(screen.getByText(/correct/i)).toBeInTheDocument();
+      expect(screen.getByText(/common neighbors/i)).toBeInTheDocument();
+    });
+
+    it('T3 training: shows grouping info banner', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const n1 = Array.from(container.querySelectorAll('circle.node-circle'))
+        .find((c) => c.getAttribute('data-node-id') === 'n1')!;
+      fireEvent.click(n1);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(screen.getByText(/one way to group/i)).toBeInTheDocument();
+    });
+
+    it('non-training: shows Answer recorded (no feedback banner)', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+        .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n2);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(screen.getByText(/answer recorded/i)).toBeInTheDocument();
+      expect(screen.queryByText(/correct/i)).toBeNull();
+      expect(screen.queryByText(/not quite/i)).toBeNull();
+    });
+  });
+
   describe('training feedback — node colors', () => {
     it('T1 correct: selected node turns green after submit', () => {
       const { container } = render(
