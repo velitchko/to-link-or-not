@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { StimulusParams } from '../../../store/types';
 import {
-  StudyParameters, Condition, EdgeRendererProps, InteractionMode,
+  StudyParameters, Condition, EdgeRendererProps, InteractionMode, FeedbackColor,
 } from './types';
 import { useForceLayout } from './hooks/useForceLayout';
 import { useZoomPan } from './hooks/useZoomPan';
@@ -31,6 +31,8 @@ const TASK_INSTRUCTIONS: Record<StudyParameters['task'], string> = {
   T3: 'Click all nodes that form a distinct group or cluster. Submit when done.',
 };
 
+const COMMUNITY_COLORS = ['#3b82f6', '#f97316', '#8b5cf6', '#ec4899', '#06b6d4'];
+
 function getNodeCursor(
   nodeId: string,
   anchorNodes: string[],
@@ -48,13 +50,15 @@ export default function NodeLinkDiagram({
   setAnswer,
 }: StimulusParams<StudyParameters>) {
   const {
-    condition, graph, task, taskPrompt,
+    condition, graph, task, taskPrompt, isTraining,
   } = parameters;
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [mode, setMode] = useState<InteractionMode>('select');
+  const [feedbackMap, setFeedbackMap] = useState<Partial<Record<string, FeedbackColor>>>({});
+  const [_trainingCorrect, setTrainingCorrect] = useState<boolean | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -120,6 +124,35 @@ export default function NodeLinkDiagram({
       isCorrect = true;
     }
 
+    if (isTraining) {
+      const newFeedbackMap: Partial<Record<string, FeedbackColor>> = {};
+      if (task === 'T1') {
+        const correctId = graph.groundTruth.T1.answer;
+        if (selectedNodes[0] === correctId) {
+          newFeedbackMap[correctId] = 'correct';
+        } else {
+          if (selectedNodes[0]) newFeedbackMap[selectedNodes[0]] = 'wrong';
+          newFeedbackMap[correctId] = 'missed';
+        }
+      } else if (task === 'T2') {
+        const truthSet = new Set(graph.groundTruth.T2.commonNeighbors);
+        for (const id of selectedNodes) {
+          newFeedbackMap[id] = truthSet.has(id) ? 'correct' : 'wrong';
+        }
+        for (const id of graph.groundTruth.T2.commonNeighbors) {
+          if (!selectedNodes.includes(id)) newFeedbackMap[id] = 'missed';
+        }
+      } else {
+        graph.groundTruth.T3.communities.forEach((community, idx) => {
+          for (const id of community) {
+            newFeedbackMap[id] = `community-${idx}`;
+          }
+        });
+      }
+      setFeedbackMap(newFeedbackMap);
+      setTrainingCorrect(isCorrect);
+    }
+
     setSubmitted(true);
     setAnswer({
       status: true,
@@ -136,6 +169,17 @@ export default function NodeLinkDiagram({
 
   function getNodeFill(nodeId: string): string {
     if (anchorNodes.includes(nodeId)) return '#f59e0b';
+
+    const fb = feedbackMap[nodeId];
+    if (fb !== undefined) {
+      if (fb === 'correct') return '#10b981';
+      if (fb === 'wrong') return '#ef4444';
+      if (fb === 'missed') return '#f59e0b';
+      // community-N
+      const idx = parseInt(fb.replace('community-', ''), 10);
+      return COMMUNITY_COLORS[idx % COMMUNITY_COLORS.length];
+    }
+
     if (selectedNodes.includes(nodeId)) return '#10b981';
     return '#4f46e5';
   }

@@ -68,6 +68,17 @@ const makeParams = (task: StudyParameters['task'], condition: StudyParameters['c
   taskPrompt: 'Test prompt',
 });
 
+const makeTrainingParams = (
+  task: StudyParameters['task'],
+  condition: StudyParameters['condition'],
+): StudyParameters => ({
+  condition,
+  graph,
+  task,
+  taskPrompt: 'Test prompt',
+  isTraining: true,
+});
+
 describe('NodeLinkDiagram', () => {
   beforeEach(() => {
     capturedLassoComplete = null;
@@ -300,5 +311,74 @@ describe('NodeLinkDiagram', () => {
     expect(n1.getAttribute('fill')).toBe('#f59e0b');
     expect(n2.getAttribute('fill')).toBe('#10b981');
     expect(n3.getAttribute('fill')).toBe('#f59e0b');
+  });
+
+  describe('training feedback — node colors', () => {
+    it('T1 correct: selected node turns green after submit', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const circles = container.querySelectorAll('circle.node-circle');
+      const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n2);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(n2.getAttribute('fill')).toBe('#10b981'); // correct = green
+    });
+
+    it('T1 wrong: selected node turns red, correct node turns gold after submit', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const circles = container.querySelectorAll('circle.node-circle');
+      const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+      const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n1); // wrong answer (correct is n2)
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(n1.getAttribute('fill')).toBe('#ef4444'); // wrong = red
+      expect(n2.getAttribute('fill')).toBe('#f59e0b'); // missed = gold
+    });
+
+    it('T2 correct: common neighbor turns green after submit', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const circles = container.querySelectorAll('circle.node-circle');
+      const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n2);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(n2.getAttribute('fill')).toBe('#10b981'); // correct = green
+    });
+
+    it('T3: nodes colored by community after submit', () => {
+      // graph.groundTruth.T3.communities = [['n1','n2'],['n3']]
+      // community-0 (n1,n2) → COMMUNITY_COLORS[0] = '#3b82f6'
+      // community-1 (n3)    → COMMUNITY_COLORS[1] = '#f97316'
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeTrainingParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const circles = container.querySelectorAll('circle.node-circle');
+      const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+      const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      const n3 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n3')!;
+      fireEvent.click(n1); // select something so Submit is enabled
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(n1.getAttribute('fill')).toBe('#3b82f6'); // community-0
+      expect(n2.getAttribute('fill')).toBe('#3b82f6'); // community-0
+      expect(n3.getAttribute('fill')).toBe('#f97316'); // community-1
+    });
+
+    it('non-training: node fills unchanged after submit', () => {
+      const { container } = render(
+        <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+      );
+      const circles = container.querySelectorAll('circle.node-circle');
+      const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+      fireEvent.click(n2);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(n2.getAttribute('fill')).toBe('#10b981'); // still selected green
+      // key check: n1 should NOT be gold (feedbackMap empty)
+      const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+      expect(n1.getAttribute('fill')).toBe('#4f46e5'); // default indigo, not feedback color
+    });
   });
 });
