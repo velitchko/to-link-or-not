@@ -140,8 +140,10 @@ function getNodeFill(nodeId: string): string {
 
 Below the SVG, when `submitted && isTraining`:
 
-- **T1/T2 correct:** Green background — "✓ Correct! [task-specific text]"
-- **T1/T2 incorrect:** Amber background — "✗ Not quite. The correct answer is highlighted in gold."
+- **T1 correct:** Green background — "✓ Correct! This is the most connected node."
+- **T2 correct:** Green background — "✓ Correct! You found all N common neighbors." (N = `commonNeighbors.length`)
+- **T1 incorrect:** Amber background — "✗ Not quite. The most connected node is highlighted in gold."
+- **T2 incorrect:** Amber background — "✗ Not quite. Missed nodes are highlighted in gold; incorrect selections are in red."
 - **T3:** Blue/info background — "ℹ Here's one way to group this network. Colors show suggested communities."
 
 When `submitted && !isTraining`: existing "✓ Answer recorded — click Next to continue." message unchanged.
