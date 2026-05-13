@@ -52,8 +52,8 @@ Participant data is stored in [Supabase](https://supabase.com). The project is p
 
 This study was built using [reVISit](https://revisit.dev), an open-source framework for creating and deploying interactive, web-based user studies for visualization research.
 
-> Yildirim, N., Sivaram, A., Slingsby, A., Rogers, L., Lex, A., & Meyer, M. (2024). reVISit: Scalable Evaluation of Interactive Visualizations in the Browser. *IEEE VIS 2024*.
+> Yildirim, N., Sivaram, A., Slingsby, A., Rogers, L., Lex, A., & Meyer, M. (2024). reVISit: Scalable Evaluation of Interactive Visualizations in the Browser. *IEEE VIS*.
 
-> Cutler, Z., Wilburn, J., Shrestha, H., Ding, Y., Bollen, B., Nadib, K.A., He, T., McNutt, A., Harrison, L., Lex, A. (2025) ReVISit 2: A Full Experiment Life Cycle User Study Framework. *IEEE VIS*
+> Cutler, Z., Wilburn, J., Shrestha, H., Ding, Y., Bollen, B., Nadib, K.A., He, T., McNutt, A., Harrison, L., Lex, A. (2025). ReVISit 2: A Full Experiment Life Cycle User Study Framework. *IEEE VIS*
 
 For documentation and tutorials, see [revisit.dev](https://revisit.dev). The reVISit source is maintained at [github.com/revisit-studies/study](https://github.com/revisit-studies/study).
