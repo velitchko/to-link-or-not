@@ -350,6 +350,48 @@ describe('NodeLinkDiagram', () => {
       expect(screen.getByText(/common neighbors/i)).toBeInTheDocument();
     });
 
+    it('T2 wrong training: shows Not quite banner', () => {
+      const graphWithWrongNode: StudyParameters['graph'] = {
+        id: 'test-g02',
+        nodes: [
+          { id: 'n1', label: 'A' },
+          { id: 'n2', label: 'B' },
+          { id: 'n3', label: 'C' },
+          { id: 'n4', label: 'D' },
+        ],
+        edges: [
+          { source: 'n1', target: 'n3' },
+          { source: 'n2', target: 'n3' },
+          { source: 'n4', target: 'n1' },
+        ],
+        groundTruth: {
+          T1: { answer: 'n1', rationale: 'highest degree' },
+          T2: { nodeA: 'n1', nodeB: 'n2', commonNeighbors: ['n3'] },
+          T3: { communities: [['n1', 'n2'], ['n3', 'n4']] },
+        },
+      };
+      const { container } = render(
+        <NodeLinkDiagram
+          parameters={{
+            condition: 'traditional',
+            graph: graphWithWrongNode,
+            task: 'T2',
+            taskPrompt: 'Test',
+            isTraining: true,
+          }}
+          setAnswer={vi.fn()}
+          answers={{}}
+        />,
+      );
+      // n1 and n2 are T2 anchors. n3 is correct (common neighbor). n4 is a wrong selectable node.
+      const n4 = Array.from(container.querySelectorAll('circle.node-circle'))
+        .find((c) => c.getAttribute('data-node-id') === 'n4')!;
+      fireEvent.click(n4); // select wrong node
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+      expect(screen.getByText(/not quite/i)).toBeInTheDocument();
+      expect(screen.getByText(/missed nodes are highlighted/i)).toBeInTheDocument();
+    });
+
     it('T3 training: shows grouping info banner', () => {
       const { container } = render(
         <NodeLinkDiagram parameters={makeTrainingParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
