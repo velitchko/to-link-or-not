@@ -28,7 +28,7 @@ export interface LassoResult {
 }
 
 export function useLasso(
-  svgRef: RefObject<SVGSVGElement>,
+  svgRef: RefObject<SVGSVGElement | null>,
   transformRef: MutableRefObject<d3.ZoomTransform>,
   nodes: PositionedNode[],
   mode: InteractionMode,

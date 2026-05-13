@@ -56,11 +56,11 @@ export default function NodeLinkDiagram({
   const [submitted, setSubmitted] = useState(false);
   const [mode, setMode] = useState<InteractionMode>('select');
   const startTimeRef = useRef<number | null>(null);
-  const svgRef = useRef<SVGSVGElement | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const positionedNodes = useForceLayout(graph.nodes, graph.edges, WIDTH, HEIGHT);
 
-  const { contentRef, transformRef, resetZoom } = useZoomPan(svgRef as React.RefObject<SVGSVGElement>, mode === 'pan');
+  const { contentRef, transformRef, resetZoom } = useZoomPan(svgRef, mode === 'pan');
 
   const anchorNodes = useMemo(
     () => (task === 'T2' ? [graph.groundTruth.T2.nodeA, graph.groundTruth.T2.nodeB] : []),
@@ -76,7 +76,7 @@ export default function NodeLinkDiagram({
   }, [submitted, anchorNodes]);
 
   const { lassoPolygon, isLassoing } = useLasso(
-    svgRef as React.RefObject<SVGSVGElement>,
+    svgRef,
     transformRef,
     positionedNodes,
     mode,
@@ -207,19 +207,19 @@ export default function NodeLinkDiagram({
                   </g>
                 ))}
               </g>
-              {isLassoing && lassoPolygon && lassoPolygon.length >= 2 && (
-                <polygon
-                  points={lassoPolygon.map(([x, y]) => `${x},${y}`).join(' ')}
-                  fill="rgba(79,70,229,0.08)"
-                  stroke="#4f46e5"
-                  strokeWidth={1.5}
-                  strokeDasharray="5,3"
-                  style={{ pointerEvents: 'none' }}
-                />
-              )}
             </>
           )}
         </g>
+        {isLassoing && lassoPolygon && lassoPolygon.length >= 2 && (
+          <polygon
+            points={lassoPolygon.map(([x, y]) => `${x},${y}`).join(' ')}
+            fill="rgba(79,70,229,0.08)"
+            stroke="#4f46e5"
+            strokeWidth={1.5}
+            strokeDasharray="5,3"
+            style={{ pointerEvents: 'none' }}
+          />
+        )}
       </svg>
 
       <div style={{

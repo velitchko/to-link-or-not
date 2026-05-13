@@ -8,7 +8,7 @@ export interface ZoomPanResult {
 }
 
 export function useZoomPan(
-  svgRef: React.RefObject<SVGSVGElement>,
+  svgRef: React.RefObject<SVGSVGElement | null>,
   panEnabled: boolean,
 ): ZoomPanResult {
   const contentRef = useRef<SVGGElement | null>(null);
