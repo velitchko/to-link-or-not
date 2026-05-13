@@ -108,6 +108,20 @@ export function InteractionStrip({
           color: '#92400e',
           fontSize: '11px',
           marginLeft: 'auto',
+          opacity: mode === 'select' ? 1 : 0.4,
+          padding: '3px 8px',
+        }}
+      >
+        <strong>Ctrl + click</strong>
+        {' adds to selection'}
+      </div>
+      <div
+        style={{
+          background: '#fefce8',
+          border: '1px solid #fde68a',
+          borderRadius: '4px',
+          color: '#92400e',
+          fontSize: '11px',
           opacity: mode === 'lasso' ? 1 : 0.4,
           padding: '3px 8px',
         }}

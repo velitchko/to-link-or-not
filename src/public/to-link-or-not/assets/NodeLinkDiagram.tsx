@@ -91,15 +91,18 @@ export default function NodeLinkDiagram({
 
   const EdgeRenderer = EDGE_RENDERERS[condition];
 
-  function handleNodeClick(nodeId: string) {
+  function handleNodeClick(nodeId: string, event: React.MouseEvent) {
     if (submitted) return;
     if (mode !== 'select') return;
     if (anchorNodes.includes(nodeId)) return;
-    setSelectedNodes((prev) => (task === 'T1'
-      ? [nodeId]
-      : prev.includes(nodeId)
+    const additive = event.ctrlKey || event.metaKey;
+    if (additive) {
+      setSelectedNodes((prev) => (prev.includes(nodeId)
         ? prev.filter((id) => id !== nodeId)
         : [...prev, nodeId]));
+    } else {
+      setSelectedNodes([nodeId]);
+    }
   }
 
   function handleSubmit() {
@@ -190,7 +193,7 @@ export default function NodeLinkDiagram({
                       }}
                       onMouseEnter={() => setHoveredNode(node.id)}
                       onMouseLeave={() => setHoveredNode(null)}
-                      onClick={() => handleNodeClick(node.id)}
+                      onClick={(e) => handleNodeClick(node.id, e)}
                     />
                     {node.label && (
                       <text

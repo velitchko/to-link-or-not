@@ -230,6 +230,47 @@ describe('NodeLinkDiagram', () => {
     expect(n2.getAttribute('fill')).toBe('#4f46e5');
   });
 
+  it('plain click in select mode replaces selection (T3)', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const circles = container.querySelectorAll('circle.node-circle');
+    const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.click(n1); // select n1
+    expect(n1.getAttribute('fill')).toBe('#10b981');
+    fireEvent.click(n2); // plain click n2 — replaces selection, n1 deselected
+    expect(n1.getAttribute('fill')).toBe('#4f46e5');
+    expect(n2.getAttribute('fill')).toBe('#10b981');
+  });
+
+  it('Ctrl+click adds a second node to selection', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const circles = container.querySelectorAll('circle.node-circle');
+    const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.click(n1); // plain click: select only n1
+    expect(n1.getAttribute('fill')).toBe('#10b981');
+    expect(n2.getAttribute('fill')).toBe('#4f46e5');
+    fireEvent.click(n2, { ctrlKey: true }); // Ctrl+click: add n2
+    expect(n1.getAttribute('fill')).toBe('#10b981');
+    expect(n2.getAttribute('fill')).toBe('#10b981');
+  });
+
+  it('Ctrl+click removes an already-selected node', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T3', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const circles = container.querySelectorAll('circle.node-circle');
+    const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    fireEvent.click(n1); // select n1
+    expect(n1.getAttribute('fill')).toBe('#10b981');
+    fireEvent.click(n1, { ctrlKey: true }); // Ctrl+click: deselect n1
+    expect(n1.getAttribute('fill')).toBe('#4f46e5');
+  });
+
   it('lasso skips anchor nodes (T2)', () => {
     const { container } = render(
       <NodeLinkDiagram parameters={makeParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,

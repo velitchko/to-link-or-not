@@ -54,8 +54,21 @@ describe('InteractionStrip', () => {
     expect(onResetSelection).toHaveBeenCalledOnce();
   });
 
-  it('shows the Ctrl hint', () => {
+  it('shows both Ctrl hint badges', () => {
     render(<InteractionStrip {...defaultProps} />);
-    expect(screen.getByText(/ctrl/i)).toBeInTheDocument();
+    expect(screen.getByText(/ctrl \+ click/i)).toBeInTheDocument();
+    expect(screen.getByText(/ctrl \+ lasso/i)).toBeInTheDocument();
+  });
+
+  it('Ctrl+click badge is fully visible in select mode', () => {
+    render(<InteractionStrip {...defaultProps} mode="select" />);
+    const badge = screen.getByText(/ctrl \+ click/i).closest('div')!;
+    expect(badge.style.opacity).toBe('1');
+  });
+
+  it('Ctrl+click badge is dimmed in lasso mode', () => {
+    render(<InteractionStrip {...defaultProps} mode="lasso" />);
+    const badge = screen.getByText(/ctrl \+ click/i).closest('div')!;
+    expect(badge.style.opacity).toBe('0.4');
   });
 });
