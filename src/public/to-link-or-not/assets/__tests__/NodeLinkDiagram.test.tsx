@@ -271,6 +271,19 @@ describe('NodeLinkDiagram', () => {
     expect(n1.getAttribute('fill')).toBe('#4f46e5');
   });
 
+  it('Ctrl+click on T1 still single-selects (no multi-select on T1)', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const circles = container.querySelectorAll('circle.node-circle');
+    const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.click(n1); // select n1
+    fireEvent.click(n2, { ctrlKey: true }); // Ctrl+click n2 — should replace (T1 is single-select)
+    expect(n1.getAttribute('fill')).toBe('#4f46e5'); // n1 deselected
+    expect(n2.getAttribute('fill')).toBe('#10b981'); // n2 selected
+  });
+
   it('lasso skips anchor nodes (T2)', () => {
     const { container } = render(
       <NodeLinkDiagram parameters={makeParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,

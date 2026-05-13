@@ -95,7 +95,7 @@ export default function NodeLinkDiagram({
     if (submitted) return;
     if (mode !== 'select') return;
     if (anchorNodes.includes(nodeId)) return;
-    const additive = event.ctrlKey || event.metaKey;
+    const additive = (event.ctrlKey || event.metaKey) && task !== 'T1';
     if (additive) {
       setSelectedNodes((prev) => (prev.includes(nodeId)
         ? prev.filter((id) => id !== nodeId)
