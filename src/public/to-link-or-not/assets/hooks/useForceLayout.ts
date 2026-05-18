@@ -16,6 +16,20 @@ export function useForceLayout(
       return () => {};
     }
 
+    const hasPrecomputedLayout = nodes.every((n) => (
+      typeof n.x === 'number'
+      && typeof n.y === 'number'
+      && Number.isFinite(n.x)
+      && Number.isFinite(n.y)
+    ));
+
+    if (hasPrecomputedLayout) {
+      setPositioned(nodes.map((n) => ({
+        id: n.id, label: n.label, x: n.x as number, y: n.y as number,
+      })));
+      return () => {};
+    }
+
     type SimNode = GraphNode & { x: number; y: number; vx: number; vy: number };
     const simNodes: SimNode[] = nodes.map((n) => ({
       ...n,
