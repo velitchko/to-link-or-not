@@ -119,6 +119,17 @@ describe('NodeLinkDiagram', () => {
     expect(call.answers['task-answer']).toBe('n2');
     expect(call.answers.isCorrect).toBe(true);
     expect(typeof call.answers.responseTimeMs).toBe('number');
+    expect(call.answers.graphId).toBe('test-g01');
+    expect(call.answers.condition).toBe('traditional');
+    expect(call.answers.task).toBe('T1');
+    expect(JSON.parse(call.answers.selectedNodes)).toEqual(['n2']);
+    expect(JSON.parse(call.answers.groundTruthSnapshot)).toEqual(graph.groundTruth.T1);
+    expect(JSON.parse(call.answers.metrics)).toMatchObject({
+      expectedNode: 'n2',
+      selectedNode: 'n2',
+      exactMatch: true,
+    });
+    expect(JSON.parse(call.answers.interactionsUsed)).toEqual({ select: 1 });
   });
 
   it('uses NoLinkRenderer when condition is no-link (no lines in SVG)', () => {
@@ -157,6 +168,18 @@ describe('NodeLinkDiagram', () => {
     // Only n2 should be in the answer (anchors were not selectable)
     expect(JSON.parse(call.answers['task-answer'])).toEqual(['n2']);
     expect(call.answers.isCorrect).toBe(true);
+    expect(JSON.parse(call.answers.selectedNodes)).toEqual(['n2']);
+    expect(JSON.parse(call.answers.groundTruthSnapshot)).toEqual(graph.groundTruth.T2);
+    expect(JSON.parse(call.answers.metrics)).toMatchObject({
+      expectedNodes: ['n2'],
+      anchorPair: ['n1', 'n3'],
+      truePositives: 1,
+      falsePositives: 0,
+      falseNegatives: 0,
+      precision: 1,
+      recall: 1,
+      exactMatch: true,
+    });
   });
 
   it('renders the InteractionStrip with mode buttons', () => {
