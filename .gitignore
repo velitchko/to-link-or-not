@@ -12,6 +12,7 @@ dist
 dist-ssr
 docs/
 !docs/superpowers/
+!docs/firebase-setup.md
 *.local
 
 # Editor directories and files
