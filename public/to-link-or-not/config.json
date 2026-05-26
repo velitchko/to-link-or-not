@@ -35648,6 +35648,22 @@
         "task": "T3",
         "taskPrompt": "Click all nodes that you perceive as belonging to the same group or cluster."
       }
+    },
+    "screen-recording-permission": {
+      "description": "Get permission to start screen recording",
+      "type": "react-component",
+      "path": "libraries/screen-recording/assets/ScreenRecording.tsx",
+      "nextButtonLocation": "belowStimulus",
+      "nextButtonText": "Continue",
+      "recordAudio": false,
+      "response": [
+        {
+          "hidden": true,
+          "type": "reactive",
+          "id": "screenRecordingPermission",
+          "prompt": "Screen recording enabled"
+        }
+      ]
     }
   },
   "sequence": {
@@ -35656,7 +35672,7 @@
       "consent",
       "demographics",
       "study-overview",
-      "$screen-recording.components.screenRecordingPermission",
+      "screen-recording-permission",
       {
         "order": "fixed",
         "components": [
