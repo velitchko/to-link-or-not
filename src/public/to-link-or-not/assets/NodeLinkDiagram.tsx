@@ -3,7 +3,13 @@ import React, {
 } from 'react';
 import { StimulusParams } from '../../../store/types';
 import {
-  StudyParameters, Condition, EdgeRendererProps, InteractionMode, FeedbackColor,
+  StudyParameters,
+  Condition,
+  EdgeRendererProps,
+  InteractionMode,
+  FeedbackColor,
+  TaskAnswerMetrics,
+  StudyTaskAnswer,
 } from './types';
 import { useForceLayout } from './hooks/useForceLayout';
 import { useZoomPan } from './hooks/useZoomPan';
@@ -33,6 +39,104 @@ const TASK_INSTRUCTIONS: Record<StudyParameters['task'], string> = {
 
 const COMMUNITY_COLORS = ['#3b82f6', '#f97316', '#8b5cf6', '#ec4899', '#06b6d4'];
 
+function sortedUnique(values: string[]): string[] {
+  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+}
+
+function countIntersection(a: string[], b: string[]): number {
+  const bSet = new Set(b);
+  return a.filter((value) => bSet.has(value)).length;
+}
+
+function computeTaskAnswer({
+  task,
+  selectedNodes,
+  graph,
+  responseTimeMs,
+  condition,
+  interactionCounts,
+}: {
+  task: StudyParameters['task'];
+  selectedNodes: string[];
+  graph: StudyParameters['graph'];
+  responseTimeMs: number;
+  condition: StudyParameters['condition'];
+  interactionCounts: Record<InteractionMode | 'resetZoom' | 'resetSelection' | 'modeChange', number>;
+}): StudyTaskAnswer {
+  const selectedNodesSorted = sortedUnique(selectedNodes);
+  const groundTruthSnapshot = graph.groundTruth[task];
+  let isCorrect = false;
+  let taskAnswer: string | string[] = selectedNodesSorted;
+  let metrics: TaskAnswerMetrics;
+
+  if (task === 'T1') {
+    const selectedNode = selectedNodes[0] ?? '';
+    taskAnswer = selectedNode;
+    isCorrect = selectedNode === graph.groundTruth.T1.answer;
+    metrics = {
+      expectedNode: graph.groundTruth.T1.answer,
+      selectedNode,
+      exactMatch: isCorrect,
+    };
+  } else if (task === 'T2') {
+    const expected = sortedUnique(graph.groundTruth.T2.commonNeighbors);
+    const truePositives = countIntersection(selectedNodesSorted, expected);
+    const falsePositives = selectedNodesSorted.length - truePositives;
+    const falseNegatives = expected.length - truePositives;
+    isCorrect = falsePositives === 0 && falseNegatives === 0;
+    metrics = {
+      expectedNodes: expected,
+      anchorPair: [graph.groundTruth.T2.nodeA, graph.groundTruth.T2.nodeB],
+      truePositives,
+      falsePositives,
+      falseNegatives,
+      precision: selectedNodesSorted.length > 0 ? truePositives / selectedNodesSorted.length : 0,
+      recall: expected.length > 0 ? truePositives / expected.length : 1,
+      exactMatch: isCorrect,
+    };
+  } else {
+    const communityOverlaps = graph.groundTruth.T3.communities.map((community, index) => {
+      const expected = sortedUnique(community);
+      const intersectionSize = countIntersection(selectedNodesSorted, expected);
+      const unionSize = new Set([...selectedNodesSorted, ...expected]).size;
+      return {
+        communityIndex: index,
+        expectedNodes: expected,
+        intersectionSize,
+        selectedSize: selectedNodesSorted.length,
+        communitySize: expected.length,
+        jaccard: unionSize > 0 ? intersectionSize / unionSize : 0,
+      };
+    });
+    const bestCommunity = communityOverlaps.reduce<typeof communityOverlaps[number] | null>(
+      (best, current) => (!best || current.jaccard > best.jaccard ? current : best),
+      null,
+    );
+    metrics = {
+      communityOverlaps,
+      bestCommunityIndex: bestCommunity?.communityIndex,
+      bestCommunityJaccard: bestCommunity?.jaccard,
+      exactMatch: false,
+    };
+  }
+
+  return {
+    taskAnswer,
+    isCorrect,
+    responseTimeMs,
+    condition,
+    task,
+    graphId: graph.id,
+    selectedNodes: selectedNodesSorted,
+    selectedNodeCount: selectedNodesSorted.length,
+    groundTruthSnapshot,
+    metrics,
+    interactionsUsed: Object.fromEntries(
+      Object.entries(interactionCounts).filter(([, count]) => count > 0),
+    ),
+  };
+}
+
 function getNodeCursor(
   nodeId: string,
   anchorNodes: string[],
@@ -60,6 +164,14 @@ export default function NodeLinkDiagram({
   const [feedbackMap, setFeedbackMap] = useState<Partial<Record<string, FeedbackColor>>>({});
   const [trainingCorrect, setTrainingCorrect] = useState<boolean | null>(null);
   const startTimeRef = useRef<number | null>(null);
+  const interactionCountsRef = useRef<Record<InteractionMode | 'resetZoom' | 'resetSelection' | 'modeChange', number>>({
+    select: 0,
+    lasso: 0,
+    pan: 0,
+    resetZoom: 0,
+    resetSelection: 0,
+    modeChange: 0,
+  });
   const svgRef = useRef<SVGSVGElement>(null);
 
   const positionedNodes = useForceLayout(graph.nodes, graph.edges, WIDTH, HEIGHT);
@@ -73,6 +185,7 @@ export default function NodeLinkDiagram({
 
   const handleLassoComplete = useCallback((nodeIds: string[], additive: boolean) => {
     if (submitted) return;
+    interactionCountsRef.current.lasso += 1;
     setSelectedNodes((prev) => {
       const selectable = nodeIds.filter((id) => !anchorNodes.includes(id));
       return additive ? [...new Set([...prev, ...selectable])] : selectable;
@@ -99,6 +212,7 @@ export default function NodeLinkDiagram({
     if (submitted) return;
     if (mode !== 'select') return;
     if (anchorNodes.includes(nodeId)) return;
+    interactionCountsRef.current.select += 1;
     const additive = (event.ctrlKey || event.metaKey) && task !== 'T1';
     if (additive) {
       setSelectedNodes((prev) => (prev.includes(nodeId)
@@ -111,18 +225,15 @@ export default function NodeLinkDiagram({
 
   function handleSubmit() {
     const responseTimeMs = startTimeRef.current !== null ? Date.now() - startTimeRef.current : 0;
-    const answerValue: string | string[] = task === 'T1' ? selectedNodes[0] : selectedNodes;
-    let isCorrect = false;
-
-    if (task === 'T1') {
-      isCorrect = selectedNodes[0] === graph.groundTruth.T1.answer;
-    } else if (task === 'T2') {
-      const expected = [...graph.groundTruth.T2.commonNeighbors].sort();
-      const actual = [...selectedNodes].sort();
-      isCorrect = JSON.stringify(actual) === JSON.stringify(expected);
-    } else {
-      isCorrect = true;
-    }
+    const answerPayload = computeTaskAnswer({
+      task,
+      selectedNodes,
+      graph,
+      responseTimeMs,
+      condition,
+      interactionCounts: interactionCountsRef.current,
+    });
+    const { isCorrect } = answerPayload;
 
     if (isTraining) {
       const newFeedbackMap: Partial<Record<string, FeedbackColor>> = {};
@@ -157,12 +268,17 @@ export default function NodeLinkDiagram({
     setAnswer({
       status: true,
       answers: {
-        'task-answer': typeof answerValue === 'string' ? answerValue : JSON.stringify(answerValue),
-        isCorrect,
-        responseTimeMs,
-        condition,
-        task,
-        graphId: graph.id,
+        'task-answer': typeof answerPayload.taskAnswer === 'string' ? answerPayload.taskAnswer : JSON.stringify(answerPayload.taskAnswer),
+        isCorrect: answerPayload.isCorrect,
+        responseTimeMs: answerPayload.responseTimeMs,
+        condition: answerPayload.condition,
+        task: answerPayload.task,
+        graphId: answerPayload.graphId,
+        selectedNodes: JSON.stringify(answerPayload.selectedNodes),
+        selectedNodeCount: answerPayload.selectedNodeCount,
+        groundTruthSnapshot: JSON.stringify(answerPayload.groundTruthSnapshot),
+        metrics: JSON.stringify(answerPayload.metrics),
+        interactionsUsed: JSON.stringify(answerPayload.interactionsUsed),
       },
     });
   }
@@ -198,9 +314,18 @@ export default function NodeLinkDiagram({
 
       <InteractionStrip
         mode={mode}
-        onModeChange={setMode}
-        onResetZoom={resetZoom}
-        onResetSelection={() => setSelectedNodes([])}
+        onModeChange={(nextMode) => {
+          if (nextMode !== mode) interactionCountsRef.current.modeChange += 1;
+          setMode(nextMode);
+        }}
+        onResetZoom={() => {
+          interactionCountsRef.current.resetZoom += 1;
+          resetZoom();
+        }}
+        onResetSelection={() => {
+          interactionCountsRef.current.resetSelection += 1;
+          setSelectedNodes([]);
+        }}
         ctrlEnabled={task !== 'T1'}
       />
 

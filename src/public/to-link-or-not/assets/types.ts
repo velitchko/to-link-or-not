@@ -35,6 +35,55 @@ export interface GroundTruthT3 {
   communities: string[][]; // each inner array is a community
 }
 
+export interface T1AnswerMetrics {
+  expectedNode: string;
+  selectedNode: string;
+  exactMatch: boolean;
+}
+
+export interface T2AnswerMetrics {
+  expectedNodes: string[];
+  anchorPair: [string, string];
+  truePositives: number;
+  falsePositives: number;
+  falseNegatives: number;
+  precision: number;
+  recall: number;
+  exactMatch: boolean;
+}
+
+export interface T3CommunityOverlap {
+  communityIndex: number;
+  expectedNodes: string[];
+  intersectionSize: number;
+  selectedSize: number;
+  communitySize: number;
+  jaccard: number;
+}
+
+export interface T3AnswerMetrics {
+  communityOverlaps: T3CommunityOverlap[];
+  bestCommunityIndex?: number;
+  bestCommunityJaccard?: number;
+  exactMatch: false;
+}
+
+export type TaskAnswerMetrics = T1AnswerMetrics | T2AnswerMetrics | T3AnswerMetrics;
+
+export interface StudyTaskAnswer {
+  taskAnswer: string | string[];
+  isCorrect: boolean;
+  responseTimeMs: number;
+  condition: Condition;
+  task: TaskType;
+  graphId: string;
+  selectedNodes: string[];
+  selectedNodeCount: number;
+  groundTruthSnapshot: GroundTruthT1 | GroundTruthT2 | GroundTruthT3;
+  metrics: TaskAnswerMetrics;
+  interactionsUsed: Partial<Record<InteractionMode | 'resetZoom' | 'resetSelection' | 'modeChange', number>>;
+}
+
 export interface GraphData {
   id: string;
   nodes: GraphNode[];
