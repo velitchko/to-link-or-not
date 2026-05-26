@@ -18,7 +18,10 @@
     "logoPath": "to-link-or-not/logo.svg",
     "withProgressBar": true,
     "autoDownloadStudy": false,
-    "withSidebar": false
+    "withSidebar": false,
+    "recordAudio": true,
+    "recordScreen": true,
+    "recordScreenFPS": 8
   },
   "baseComponents": {
     "node-link-trial": {
@@ -35653,6 +35656,7 @@
       "consent",
       "demographics",
       "study-overview",
+      "$screen-recording.components.screenRecordingPermission",
       {
         "order": "fixed",
         "components": [
