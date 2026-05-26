@@ -6,6 +6,8 @@ export type FeedbackColor = 'correct' | 'wrong' | 'missed' | `community-${number
 export interface GraphNode {
   id: string;
   label?: string;
+  x?: number;
+  y?: number;
 }
 
 export interface GraphEdge {
@@ -43,6 +45,13 @@ export interface GraphData {
     T3: GroundTruthT3;
   };
   stubLengthFraction?: number; // default 0.25, tuned per pilot
+  layout?: {
+    type: string;
+    width?: number;
+    height?: number;
+    margin?: number;
+    seed?: number;
+  };
 }
 
 export interface StudyParameters {
