@@ -10,11 +10,13 @@ const CONFIG_OUT = path.join(process.cwd(), 'public', STUDY_NAME, 'config.json')
 type Condition = 'traditional' | 'no-link' | 'on-demand' | 'stubs';
 type TaskType = 'T1' | 'T2' | 'T3';
 
-const POOL_TO_CONDITION: Record<string, Condition> = {
-  'pool-a': 'traditional',
-  'pool-b': 'no-link',
-  'pool-c': 'on-demand',
-  'pool-d': 'stubs',
+type LfrConditionDir = 'condition_1' | 'condition_2' | 'condition_3' | 'condition_4';
+
+const LFR_CONDITION_TO_STUDY_CONDITION: Record<LfrConditionDir, Condition> = {
+  condition_1: 'traditional',
+  condition_2: 'no-link',
+  condition_3: 'on-demand',
+  condition_4: 'stubs',
 };
 
 const TASK_PROMPTS: Record<TaskType, string> = {
@@ -24,7 +26,7 @@ const TASK_PROMPTS: Record<TaskType, string> = {
 };
 
 const TASKS: TaskType[] = ['T1', 'T2', 'T3'];
-const POOLS = ['pool-a', 'pool-b', 'pool-c', 'pool-d'] as const;
+const LFR_CONDITION_DIRS = ['condition_1', 'condition_2', 'condition_3', 'condition_4'] as const;
 
 function nodeLinkTrialResponses() {
   return [
@@ -53,16 +55,28 @@ function nodeLinkTrainingResponses() {
   return nodeLinkTrialResponses().filter((response) => response.id !== 'comment');
 }
 
-function getGraphFiles(pool: string): string[] {
-  const dir = path.join(GRAPHS_DIR, pool);
+function getGraphFiles(conditionDir: LfrConditionDir): string[] {
+  const dir = path.join(GRAPHS_DIR, 'lfr', conditionDir);
   return fs.readdirSync(dir)
     .filter((f) => f.endsWith('.json'))
-    .map((f) => `${STUDY_NAME}/graphs/${pool}/${f}`);
+    .sort((a, b) => a.localeCompare(b))
+    .map((f) => `${STUDY_NAME}/graphs/lfr/${conditionDir}/${f}`);
 }
 
-function loadGraph(graphRelPath: string): object {
+function loadGraph(graphRelPath: string): Record<string, unknown> {
   const absPath = path.join(process.cwd(), 'public', graphRelPath);
   return JSON.parse(fs.readFileSync(absPath, 'utf-8'));
+}
+
+function graphPlaceholder(graphRelPath: string): object {
+  const graph = loadGraph(graphRelPath);
+  return {
+    id: graph.id ?? path.basename(graphRelPath, '.json'),
+    nodes: [],
+    edges: [],
+    groundTruth: graph.groundTruth,
+    stubLengthFraction: graph.stubLengthFraction,
+  };
 }
 
 function trialComponent(graphRelPath: string, task: TaskType, condition: Condition) {
@@ -74,17 +88,18 @@ function trialComponent(graphRelPath: string, task: TaskType, condition: Conditi
       baseComponent: 'node-link-trial',
       parameters: {
         condition,
-        graph: loadGraph(graphRelPath),
+        graph: graphPlaceholder(graphRelPath),
         task,
         taskPrompt: TASK_PROMPTS[task],
+        graphPath: graphRelPath,
       },
     },
   };
 }
 
-function conditionBlock(pool: string): { componentDefs: Record<string, object>; inlineBlock: object } {
-  const condition = POOL_TO_CONDITION[pool];
-  const graphFiles = getGraphFiles(pool);
+function conditionBlock(conditionDir: LfrConditionDir): { componentDefs: Record<string, object>; inlineBlock: object } {
+  const condition = LFR_CONDITION_TO_STUDY_CONDITION[conditionDir];
+  const graphFiles = getGraphFiles(conditionDir);
   const componentDefs: Record<string, object> = {};
   const graphGroups: object[] = [];
 
@@ -112,7 +127,29 @@ function conditionBlock(pool: string): { componentDefs: Record<string, object>; 
   return { componentDefs, inlineBlock };
 }
 
-function nasaTlxItems(condition: string) {
+const CONDITION_LABELS: Record<Condition, string> = {
+  traditional: 'Traditional links',
+  'no-link': 'No links',
+  'on-demand': 'On-demand links',
+  stubs: 'Link stubs',
+};
+
+const CONDITION_DESCRIPTIONS: Record<Condition, string> = {
+  traditional: 'All connections are shown as solid lines throughout the task.',
+  'no-link': 'No connection lines are drawn; use the node positions and layout alone.',
+  'on-demand': 'Connections are hidden by default and appear only when hovering over a node.',
+  stubs: 'Short partial edge stubs show the number and direction of connections without drawing full links.',
+};
+
+const CONDITION_REMINDERS: Record<Condition, string> = {
+  traditional: `${CONDITION_LABELS.traditional}: ${CONDITION_DESCRIPTIONS.traditional}`,
+  'no-link': `${CONDITION_LABELS['no-link']}: ${CONDITION_DESCRIPTIONS['no-link']}`,
+  'on-demand': `${CONDITION_LABELS['on-demand']}: ${CONDITION_DESCRIPTIONS['on-demand']}`,
+  stubs: `${CONDITION_LABELS.stubs}: ${CONDITION_DESCRIPTIONS.stubs}`,
+};
+
+function nasaTlxItems(condition: Condition) {
+  const conditionReminder = CONDITION_REMINDERS[condition];
   const dimensions = [
     { id: 'mental-demand', label: 'Mental Demand' },
     { id: 'temporal-demand', label: 'Temporal Demand' },
@@ -132,18 +169,26 @@ function nasaTlxItems(condition: string) {
     })),
     {
       id: `${condition}-open-comment`,
-      prompt: 'Any thoughts about this representation condition?',
+      prompt: `Any thoughts about this representation condition (${conditionReminder})?`,
       type: 'longText',
       required: false,
     },
   ];
 }
 
+function nasaTlxComponent(condition: Condition): object {
+  return {
+    type: 'questionnaire',
+    response: nasaTlxItems(condition),
+    description: `Condition: ${CONDITION_LABELS[condition]}. ${CONDITION_DESCRIPTIONS[condition]}`,
+  };
+}
+
 const allComponentDefs: Record<string, object> = {};
 const conditionInlineBlocks: object[] = [];
 
-for (const pool of POOLS) {
-  const { componentDefs, inlineBlock } = conditionBlock(pool);
+for (const conditionDir of LFR_CONDITION_DIRS) {
+  const { componentDefs, inlineBlock } = conditionBlock(conditionDir);
   Object.assign(allComponentDefs, componentDefs);
   conditionInlineBlocks.push(inlineBlock);
 }
@@ -276,22 +321,10 @@ const staticComponents: Record<string, object> = {
     path: `${STUDY_NAME}/intro-stubs.md`,
     response: [],
   },
-  'nasa-tlx-traditional': {
-    type: 'questionnaire',
-    response: nasaTlxItems('traditional'),
-  },
-  'nasa-tlx-no-link': {
-    type: 'questionnaire',
-    response: nasaTlxItems('no-link'),
-  },
-  'nasa-tlx-on-demand': {
-    type: 'questionnaire',
-    response: nasaTlxItems('on-demand'),
-  },
-  'nasa-tlx-stubs': {
-    type: 'questionnaire',
-    response: nasaTlxItems('stubs'),
-  },
+  'nasa-tlx-traditional': nasaTlxComponent('traditional'),
+  'nasa-tlx-no-link': nasaTlxComponent('no-link'),
+  'nasa-tlx-on-demand': nasaTlxComponent('on-demand'),
+  'nasa-tlx-stubs': nasaTlxComponent('stubs'),
   debrief: {
     type: 'questionnaire',
     response: [
@@ -327,6 +360,22 @@ const staticComponents: Record<string, object> = {
       },
     ],
   },
+  'screen-recording-permission': {
+    description: 'Get permission to start screen recording',
+    type: 'react-component',
+    path: 'libraries/screen-recording/assets/ScreenRecording.tsx',
+    nextButtonLocation: 'belowStimulus',
+    nextButtonText: 'Continue',
+    recordAudio: false,
+    response: [
+      {
+        hidden: true,
+        type: 'reactive',
+        id: 'screenRecordingPermission',
+        prompt: 'Screen recording enabled',
+      },
+    ],
+  },
 };
 
 const config = {
@@ -335,7 +384,7 @@ const config = {
     title: 'To Link or Not',
     version: '1.0.0',
     authors: ['Velitchko Filipov'],
-    date: '2026-04-28',
+    date: '2026-04-22',
     description: 'How does link visibility affect cognitive maps of node-link diagrams?',
     organizations: ['TU Wien'],
   },
@@ -346,6 +395,9 @@ const config = {
     withProgressBar: true,
     autoDownloadStudy: false,
     withSidebar: false,
+    recordAudio: true,
+    recordScreen: true,
+    recordScreenFPS: 8,
   },
   baseComponents: {
     'node-link-trial': {
@@ -372,6 +424,7 @@ const config = {
       'consent',
       'demographics',
       'study-overview',
+      'screen-recording-permission',
       {
         order: 'fixed',
         components: ['training-traditional', 'training-no-link', 'training-on-demand', 'training-stubs'],
@@ -385,6 +438,6 @@ const config = {
   },
 };
 
-fs.writeFileSync(CONFIG_OUT, JSON.stringify(config, null, 2));
+fs.writeFileSync(CONFIG_OUT, `${JSON.stringify(config, null, 2)}\n`);
 console.warn(`Config written to ${CONFIG_OUT}`);
 console.warn(`Total component definitions: ${Object.keys(config.components).length}`);
