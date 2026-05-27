@@ -33,7 +33,7 @@ That means preserving:
 2. **Study configuration**
    - `public/to-link-or-not/config.json`;
    - `scripts/generate-config.ts` and generator inputs so the config can be regenerated;
-   - imported libraries used by the config, especially `screen-recording` if recording remains enabled.
+   - recording-permission component wiring. Upstream examples import the `screen-recording` library and reference `$screen-recording.components.screenRecordingPermission`; the current study generator instead defines a local `screen-recording-permission` component pointing at `libraries/screen-recording/assets/ScreenRecording.tsx`. A resync must either preserve and verify that local component or migrate to the upstream imported-library form.
 3. **Stimuli**
    - all graph JSON files;
    - LFR generation/conversion scripts;
@@ -241,7 +241,9 @@ After resync:
 
 - confirm `uiConfig.recordAudio` / `uiConfig.recordScreen` are still set as intended;
 - confirm the screen-recording permission component still appears before training/trials;
-- confirm imported libraries still include `screen-recording` if using the library component;
+- confirm recording-permission wiring matches one supported pattern:
+  - upstream imported-library pattern: `importedLibraries` includes `screen-recording` and the sequence references `$screen-recording.components.screenRecordingPermission`; or
+  - current local-component pattern: `components.screen-recording-permission.path` remains `libraries/screen-recording/assets/ScreenRecording.tsx` and a browser smoke test confirms screen capture starts before recorded trials;
 - test one local participant flow with a throwaway study id;
 - verify participant answers are written;
 - verify audio/screen blobs are written only to the intended backend;
