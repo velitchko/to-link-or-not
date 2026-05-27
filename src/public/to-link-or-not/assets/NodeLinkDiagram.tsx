@@ -19,6 +19,7 @@ import { TraditionalRenderer } from './renderers/TraditionalRenderer';
 import { NoLinkRenderer } from './renderers/NoLinkRenderer';
 import { OnDemandRenderer } from './renderers/OnDemandRenderer';
 import { StubsRenderer } from './renderers/StubsRenderer';
+import { getJsonAssetByPath } from '../../../utils/getStaticAsset';
 
 const WIDTH = 800;
 const HEIGHT = 560;
@@ -154,9 +155,11 @@ export default function NodeLinkDiagram({
   setAnswer,
 }: StimulusParams<StudyParameters>) {
   const {
-    condition, graph, task, taskPrompt, isTraining,
+    condition, graph: fallbackGraph, graphPath, task, taskPrompt, isTraining,
   } = parameters;
 
+  const [graph, setGraph] = useState(fallbackGraph);
+  const [graphLoadError, setGraphLoadError] = useState<string | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
@@ -173,6 +176,38 @@ export default function NodeLinkDiagram({
     modeChange: 0,
   });
   const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGraph() {
+      if (!graphPath) {
+        setGraph(fallbackGraph);
+        setGraphLoadError(null);
+        return;
+      }
+
+      try {
+        const loadedGraph = await getJsonAssetByPath(graphPath);
+        if (!cancelled) {
+          if (loadedGraph?.nodes?.length && loadedGraph?.edges?.length && loadedGraph?.groundTruth) {
+            setGraph(loadedGraph);
+            setGraphLoadError(null);
+          } else {
+            setGraphLoadError(`Could not load graph data from ${graphPath}`);
+          }
+        }
+      } catch {
+        if (!cancelled) setGraphLoadError(`Could not load graph data from ${graphPath}`);
+      }
+    }
+
+    loadGraph();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fallbackGraph, graphPath]);
 
   const positionedNodes = useForceLayout(graph.nodes, graph.edges, WIDTH, HEIGHT);
 
@@ -328,6 +363,12 @@ export default function NodeLinkDiagram({
         }}
         ctrlEnabled={task !== 'T1'}
       />
+
+      {graphLoadError && (
+        <div style={{ padding: '0.75rem 1rem', color: '#b91c1c', background: '#fef2f2' }}>
+          {graphLoadError}
+        </div>
+      )}
 
       <svg
         ref={svgRef}
