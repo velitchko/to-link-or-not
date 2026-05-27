@@ -1117,11 +1117,12 @@
         },
         {
           "id": "traditional-open-comment",
-          "prompt": "Any thoughts about this representation condition?",
+          "prompt": "Any thoughts about this representation condition (Traditional links: All connections are shown as solid lines throughout the task.)?",
           "type": "longText",
           "required": false
         }
-      ]
+      ],
+      "description": "Condition: Traditional links. All connections are shown as solid lines throughout the task."
     },
     "nasa-tlx-no-link": {
       "type": "questionnaire",
@@ -1173,11 +1174,12 @@
         },
         {
           "id": "no-link-open-comment",
-          "prompt": "Any thoughts about this representation condition?",
+          "prompt": "Any thoughts about this representation condition (No links: No connection lines are drawn; use the node positions and layout alone.)?",
           "type": "longText",
           "required": false
         }
-      ]
+      ],
+      "description": "Condition: No links. No connection lines are drawn; use the node positions and layout alone."
     },
     "nasa-tlx-on-demand": {
       "type": "questionnaire",
@@ -1229,11 +1231,12 @@
         },
         {
           "id": "on-demand-open-comment",
-          "prompt": "Any thoughts about this representation condition?",
+          "prompt": "Any thoughts about this representation condition (On-demand links: Connections are hidden by default and appear only when hovering over a node.)?",
           "type": "longText",
           "required": false
         }
-      ]
+      ],
+      "description": "Condition: On-demand links. Connections are hidden by default and appear only when hovering over a node."
     },
     "nasa-tlx-stubs": {
       "type": "questionnaire",
@@ -1285,11 +1288,12 @@
         },
         {
           "id": "stubs-open-comment",
-          "prompt": "Any thoughts about this representation condition?",
+          "prompt": "Any thoughts about this representation condition (Link stubs: Short partial edge stubs show the number and direction of connections without drawing full links.)?",
           "type": "longText",
           "required": false
         }
-      ]
+      ],
+      "description": "Condition: Link stubs. Short partial edge stubs show the number and direction of connections without drawing full links."
     },
     "debrief": {
       "type": "questionnaire",
