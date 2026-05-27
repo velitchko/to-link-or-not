@@ -106,6 +106,7 @@ export interface GraphData {
 export interface StudyParameters {
   condition: Condition;
   graph: GraphData;
+  graphPath?: string;
   task: TaskType;
   taskPrompt: string;
   isTraining?: boolean;
