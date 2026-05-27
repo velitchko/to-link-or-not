@@ -76,10 +76,12 @@ def compute_precomputed_layout(
 ) -> None:
     """Assign deterministic, frontend-ready x/y positions to nodes.
 
-    This intentionally avoids any browser-side force simulation. It uses a simple
-    community-aware circular packing: community centers are placed around an
-    ellipse, and nodes are placed on smaller rings within their primary
-    community. High-degree nodes sit closer to the community center.
+    This intentionally avoids browser-side force simulation. It uses the
+    approved static "force-organic" layout: deterministic soft community-cloud
+    initialization, edge springs, node repulsion, and weak community gravity.
+    The community target radius is set slightly wider than the accepted
+    candidate-B preview so clusters get a tad more breathing room without
+    returning to visibly separated community-radial blobs.
     """
     if not nodes:
         return
@@ -87,6 +89,8 @@ def compute_precomputed_layout(
     rng = random.Random(seed)
     adjacency = build_adjacency(nodes, edges)
     node_by_id = {node['id']: node for node in nodes}
+    node_ids = [node['id'] for node in nodes]
+
     primary_community: dict[str, int] = {}
     for community_idx, community_nodes in enumerate(communities):
         for node_id in community_nodes:
@@ -98,20 +102,31 @@ def compute_precomputed_layout(
 
     center_x = width / 2
     center_y = height / 2
-    cluster_radius_x = max(1.0, (width - 2 * LAYOUT_MARGIN) * 0.34)
-    cluster_radius_y = max(1.0, (height - 2 * LAYOUT_MARGIN) * 0.30)
+    drawable_width = width - 2 * LAYOUT_MARGIN
+    drawable_height = height - 2 * LAYOUT_MARGIN
+    community_count = max(1, len(communities))
 
-    community_centers: list[tuple[float, float]] = []
-    if len(communities) == 1:
-        community_centers.append((center_x, center_y))
-    else:
-        for idx in range(len(communities)):
-            angle = -math.pi / 2 + 2 * math.pi * idx / len(communities)
-            community_centers.append((
-                center_x + cluster_radius_x * math.cos(angle),
-                center_y + cluster_radius_y * math.sin(angle),
+    def community_targets(radius_x: float, radius_y: float) -> list[tuple[float, float]]:
+        if community_count == 1:
+            return [(center_x, center_y)]
+        targets: list[tuple[float, float]] = []
+        for idx in range(community_count):
+            angle = -math.pi / 2 + 2 * math.pi * idx / community_count
+            targets.append((
+                center_x + radius_x * math.cos(angle),
+                center_y + radius_y * math.sin(angle),
             ))
+        return targets
 
+    # Candidate-B used 0.16/0.14 here; 0.19/0.17 is the approved "tad more
+    # spacing" between community regions while preserving an organic layout.
+    community_centers = community_targets(drawable_width * 0.19, drawable_height * 0.17)
+
+    positions: dict[str, list[float]] = {}
+    velocities: dict[str, list[float]] = {node_id: [0.0, 0.0] for node_id in node_ids}
+
+    # Deterministic sunflower-cloud initialization keeps related nodes near one
+    # another before the force settling step, but avoids the old tight rings.
     placed: set[str] = set()
     for community_idx, community_nodes in enumerate(communities):
         cx, cy = community_centers[community_idx]
@@ -119,40 +134,89 @@ def compute_precomputed_layout(
             {node_id for node_id in community_nodes if primary_community.get(node_id) == community_idx},
             key=lambda node_id: (-len(adjacency.get(node_id, set())), node_id),
         )
-        if not unique_nodes:
-            continue
-        local_radius = min(86.0, max(34.0, 10.0 + 4.0 * math.sqrt(len(unique_nodes))))
+        local_radius = max(82.0, min(128.0, 42.0 + 7.0 * math.sqrt(len(unique_nodes))))
         angle_offset = rng.random() * 2 * math.pi
         for rank, node_id in enumerate(unique_nodes):
-            if node_id not in node_by_id:
-                continue
-            # Spiral-ish placement keeps high-degree nodes central and leaves
-            # lower-degree nodes around them, with deterministic tiny jitter.
-            if rank == 0:
-                radius = min(20.0, local_radius * 0.25)
-                angle = angle_offset
-            else:
-                angle = angle_offset + 2 * math.pi * (rank - 1) / max(1, len(unique_nodes) - 1)
-                radius = local_radius * (0.55 + 0.45 * ((rank - 1) % 3) / 2)
-            jitter_x = rng.uniform(-6, 6)
-            jitter_y = rng.uniform(-6, 6)
-            x = cx + radius * math.cos(angle) + jitter_x
-            y = cy + radius * math.sin(angle) + jitter_y
-            node_by_id[node_id]['x'] = round(min(width - LAYOUT_MARGIN, max(LAYOUT_MARGIN, x)), 2)
-            node_by_id[node_id]['y'] = round(min(height - LAYOUT_MARGIN, max(LAYOUT_MARGIN, y)), 2)
+            angle = angle_offset + rank * 2.399963229728653  # golden angle
+            radius = local_radius * math.sqrt((rank + 0.5) / max(1, len(unique_nodes)))
+            x = cx + radius * math.cos(angle) + rng.uniform(-10, 10)
+            y = cy + radius * math.sin(angle) + rng.uniform(-10, 10)
+            positions[node_id] = [
+                min(width - LAYOUT_MARGIN, max(LAYOUT_MARGIN, x)),
+                min(height - LAYOUT_MARGIN, max(LAYOUT_MARGIN, y)),
+            ]
             placed.add(node_id)
 
-    # Overlapping or otherwise unplaced nodes go near the barycenter of their communities.
-    for node in nodes:
-        if node['id'] in placed:
+    for node_id in node_ids:
+        if node_id in placed:
             continue
-        memberships = [idx for idx, comm in enumerate(communities) if node['id'] in comm]
-        centers = [community_centers[idx] for idx in memberships] or [(center_x, center_y)]
-        x = sum(c[0] for c in centers) / len(centers) + rng.uniform(-8, 8)
-        y = sum(c[1] for c in centers) / len(centers) + rng.uniform(-8, 8)
-        node['x'] = round(min(width - LAYOUT_MARGIN, max(LAYOUT_MARGIN, x)), 2)
-        node['y'] = round(min(height - LAYOUT_MARGIN, max(LAYOUT_MARGIN, y)), 2)
+        community_idx = primary_community.get(node_id, 0) % community_count
+        cx, cy = community_centers[community_idx]
+        positions[node_id] = [cx + rng.uniform(-24, 24), cy + rng.uniform(-24, 24)]
 
+    edge_pairs = [(edge['source'], edge['target']) for edge in edges]
+
+    for step in range(460):
+        forces: dict[str, list[float]] = {node_id: [0.0, 0.0] for node_id in node_ids}
+
+        # O(n^2) is acceptable for the fixed 120-node study graphs.
+        for a_idx, node_a in enumerate(node_ids):
+            ax, ay = positions[node_a]
+            for node_b in node_ids[a_idx + 1:]:
+                bx, by = positions[node_b]
+                dx = ax - bx
+                dy = ay - by
+                distance_sq = max(25.0, dx * dx + dy * dy)
+                distance = math.sqrt(distance_sq)
+                force = 1250.0 / distance_sq
+                fx = force * dx / distance
+                fy = force * dy / distance
+                forces[node_a][0] += fx
+                forces[node_a][1] += fy
+                forces[node_b][0] -= fx
+                forces[node_b][1] -= fy
+
+        for source, target in edge_pairs:
+            sx, sy = positions[source]
+            tx, ty = positions[target]
+            dx = tx - sx
+            dy = ty - sy
+            distance = max(1.0, math.hypot(dx, dy))
+            same_community = primary_community.get(source) == primary_community.get(target)
+            desired = 44.0 if same_community else 80.0
+            force = 0.020 * (distance - desired)
+            fx = force * dx / distance
+            fy = force * dy / distance
+            forces[source][0] += fx
+            forces[source][1] += fy
+            forces[target][0] -= fx
+            forces[target][1] -= fy
+
+        for node_id in node_ids:
+            x, y = positions[node_id]
+            community_idx = primary_community.get(node_id, 0) % community_count
+            tx, ty = community_centers[community_idx]
+            # Weak community gravity plus canvas centering; this is what keeps
+            # the layout organic rather than separated into radial islands.
+            forces[node_id][0] += 0.010 * (tx - x) + 0.006 * (center_x - x)
+            forces[node_id][1] += 0.010 * (ty - y) + 0.006 * (center_y - y)
+
+        temperature = max(0.15, 1.0 - step / 460)
+        for node_id in node_ids:
+            velocities[node_id][0] = (velocities[node_id][0] + forces[node_id][0]) * 0.78
+            velocities[node_id][1] = (velocities[node_id][1] + forces[node_id][1]) * 0.78
+            positions[node_id][0] = min(
+                width - LAYOUT_MARGIN,
+                max(LAYOUT_MARGIN, positions[node_id][0] + velocities[node_id][0] * temperature),
+            )
+            positions[node_id][1] = min(
+                height - LAYOUT_MARGIN,
+                max(LAYOUT_MARGIN, positions[node_id][1] + velocities[node_id][1] * temperature),
+            )
+
+    for node_id, (x, y) in positions.items():
+        node_by_id[node_id]['x'] = round(x, 2)
+        node_by_id[node_id]['y'] = round(y, 2)
 
 def pick_ground_truth(nodes: list[dict[str, Any]], edges: list[dict[str, str]], communities: list[list[str]]) -> dict[str, Any]:
     degree: dict[str, int] = defaultdict(int)
@@ -224,11 +288,13 @@ def main() -> None:
         'generator': 'LFR unweighted_undirected benchmark',
         'generatorSource': 'https://github.com/andrealancichinetti/LFRbenchmarks',
         'layout': {
-            'type': 'precomputed-community-radial',
+            'type': 'precomputed-force-organic-weak-community',
             'width': LAYOUT_WIDTH,
             'height': LAYOUT_HEIGHT,
             'margin': LAYOUT_MARGIN,
             'seed': params.get('seed'),
+            'algorithm': 'static force-organic with weak community gravity',
+            'communitySpacing': 'candidate-b-plus-approx-18-percent',
         },
         'parameters': params,
         'nodes': nodes,
