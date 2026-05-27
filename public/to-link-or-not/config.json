@@ -42,6 +42,76 @@
           "type": "reactive"
         },
         {
+          "id": "isCorrect",
+          "prompt": "Correct answer?",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "responseTimeMs",
+          "prompt": "Response time (ms)",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "condition",
+          "prompt": "Link visibility condition",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "task",
+          "prompt": "Task",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "graphId",
+          "prompt": "Graph ID",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodes",
+          "prompt": "Selected nodes",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodeCount",
+          "prompt": "Selected node count",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "groundTruthSnapshot",
+          "prompt": "Ground truth snapshot",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "metrics",
+          "prompt": "Task metrics",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "interactionsUsed",
+          "prompt": "Interactions used",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
           "id": "comment",
           "prompt": "Describe your reasoning or mental image of the network.",
           "type": "longText",
@@ -342,6 +412,76 @@
           "id": "task-answer",
           "prompt": "Your answer",
           "type": "reactive"
+        },
+        {
+          "id": "isCorrect",
+          "prompt": "Correct answer?",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "responseTimeMs",
+          "prompt": "Response time (ms)",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "condition",
+          "prompt": "Link visibility condition",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "task",
+          "prompt": "Task",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "graphId",
+          "prompt": "Graph ID",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodes",
+          "prompt": "Selected nodes",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodeCount",
+          "prompt": "Selected node count",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "groundTruthSnapshot",
+          "prompt": "Ground truth snapshot",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "metrics",
+          "prompt": "Task metrics",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "interactionsUsed",
+          "prompt": "Interactions used",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
         }
       ]
     },
@@ -576,6 +716,76 @@
           "id": "task-answer",
           "prompt": "Your answer",
           "type": "reactive"
+        },
+        {
+          "id": "isCorrect",
+          "prompt": "Correct answer?",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "responseTimeMs",
+          "prompt": "Response time (ms)",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "condition",
+          "prompt": "Link visibility condition",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "task",
+          "prompt": "Task",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "graphId",
+          "prompt": "Graph ID",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodes",
+          "prompt": "Selected nodes",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodeCount",
+          "prompt": "Selected node count",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "groundTruthSnapshot",
+          "prompt": "Ground truth snapshot",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "metrics",
+          "prompt": "Task metrics",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "interactionsUsed",
+          "prompt": "Interactions used",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
         }
       ]
     },
@@ -810,6 +1020,76 @@
           "id": "task-answer",
           "prompt": "Your answer",
           "type": "reactive"
+        },
+        {
+          "id": "isCorrect",
+          "prompt": "Correct answer?",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "responseTimeMs",
+          "prompt": "Response time (ms)",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "condition",
+          "prompt": "Link visibility condition",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "task",
+          "prompt": "Task",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "graphId",
+          "prompt": "Graph ID",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodes",
+          "prompt": "Selected nodes",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodeCount",
+          "prompt": "Selected node count",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "groundTruthSnapshot",
+          "prompt": "Ground truth snapshot",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "metrics",
+          "prompt": "Task metrics",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "interactionsUsed",
+          "prompt": "Interactions used",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
         }
       ]
     },
@@ -1044,6 +1324,76 @@
           "id": "task-answer",
           "prompt": "Your answer",
           "type": "reactive"
+        },
+        {
+          "id": "isCorrect",
+          "prompt": "Correct answer?",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "responseTimeMs",
+          "prompt": "Response time (ms)",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "condition",
+          "prompt": "Link visibility condition",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "task",
+          "prompt": "Task",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "graphId",
+          "prompt": "Graph ID",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodes",
+          "prompt": "Selected nodes",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "selectedNodeCount",
+          "prompt": "Selected node count",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "groundTruthSnapshot",
+          "prompt": "Ground truth snapshot",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "metrics",
+          "prompt": "Task metrics",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
+        },
+        {
+          "id": "interactionsUsed",
+          "prompt": "Interactions used",
+          "type": "reactive",
+          "hidden": true,
+          "required": false
         }
       ]
     },

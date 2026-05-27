@@ -26,6 +26,33 @@ const TASK_PROMPTS: Record<TaskType, string> = {
 const TASKS: TaskType[] = ['T1', 'T2', 'T3'];
 const POOLS = ['pool-a', 'pool-b', 'pool-c', 'pool-d'] as const;
 
+function nodeLinkTrialResponses() {
+  return [
+    { id: 'task-answer', prompt: 'Your answer', type: 'reactive' },
+    { id: 'isCorrect', prompt: 'Correct answer?', type: 'reactive', hidden: true, required: false },
+    { id: 'responseTimeMs', prompt: 'Response time (ms)', type: 'reactive', hidden: true, required: false },
+    { id: 'condition', prompt: 'Link visibility condition', type: 'reactive', hidden: true, required: false },
+    { id: 'task', prompt: 'Task', type: 'reactive', hidden: true, required: false },
+    { id: 'graphId', prompt: 'Graph ID', type: 'reactive', hidden: true, required: false },
+    { id: 'selectedNodes', prompt: 'Selected nodes', type: 'reactive', hidden: true, required: false },
+    { id: 'selectedNodeCount', prompt: 'Selected node count', type: 'reactive', hidden: true, required: false },
+    { id: 'groundTruthSnapshot', prompt: 'Ground truth snapshot', type: 'reactive', hidden: true, required: false },
+    { id: 'metrics', prompt: 'Task metrics', type: 'reactive', hidden: true, required: false },
+    { id: 'interactionsUsed', prompt: 'Interactions used', type: 'reactive', hidden: true, required: false },
+    {
+      id: 'comment',
+      prompt: 'Describe your reasoning or mental image of the network.',
+      type: 'longText',
+      placeholder: 'Type your thoughts here...',
+      required: false,
+    },
+  ];
+}
+
+function nodeLinkTrainingResponses() {
+  return nodeLinkTrialResponses().filter((response) => response.id !== 'comment');
+}
+
 function getGraphFiles(pool: string): string[] {
   const dir = path.join(GRAPHS_DIR, pool);
   return fs.readdirSync(dir)
@@ -188,7 +215,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] Traditional view: all connections shown as lines. Which node looks most connected?',
       isTraining: true,
     },
-    response: [{ id: 'task-answer', prompt: 'Your answer', type: 'reactive' }],
+    response: nodeLinkTrainingResponses(),
   },
   'training-no-link': {
     type: 'react-component',
@@ -201,7 +228,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] No-link view: only nodes shown. Which node looks most important?',
       isTraining: true,
     },
-    response: [{ id: 'task-answer', prompt: 'Your answer', type: 'reactive' }],
+    response: nodeLinkTrainingResponses(),
   },
   'training-on-demand': {
     type: 'react-component',
@@ -214,7 +241,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] On-demand view: hover over a node to see its connections. Which node looks most connected?',
       isTraining: true,
     },
-    response: [{ id: 'task-answer', prompt: 'Your answer', type: 'reactive' }],
+    response: nodeLinkTrainingResponses(),
   },
   'training-stubs': {
     type: 'react-component',
@@ -227,7 +254,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] Stub view: short lines indicate connections. Which node has most stubs?',
       isTraining: true,
     },
-    response: [{ id: 'task-answer', prompt: 'Your answer', type: 'reactive' }],
+    response: nodeLinkTrainingResponses(),
   },
   'intro-traditional': {
     type: 'markdown',
@@ -332,16 +359,7 @@ const config = {
         task: 'T1',
         taskPrompt: '',
       },
-      response: [
-        { id: 'task-answer', prompt: 'Your answer', type: 'reactive' },
-        {
-          id: 'comment',
-          prompt: 'Describe your reasoning or mental image of the network.',
-          type: 'longText',
-          placeholder: 'Type your thoughts here...',
-          required: false,
-        },
-      ],
+      response: nodeLinkTrialResponses(),
     },
   },
   components: {
