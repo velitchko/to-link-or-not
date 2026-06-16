@@ -17,8 +17,9 @@ export function TraditionalRenderer({ nodes, edges }: EdgeRendererProps) {
             y1={source.y}
             x2={target.x}
             y2={target.y}
-            stroke="#94a3b8"
-            strokeWidth={1.5}
+            stroke="#64748b"
+            strokeWidth={1.2}
+            opacity={0.34}
           />
         );
       })}

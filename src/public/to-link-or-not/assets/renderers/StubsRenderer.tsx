@@ -22,9 +22,10 @@ export function StubsRenderer({ nodes, edges, stubLengthFraction = 0.25 }: EdgeR
             y1={source.y}
             x2={source.x + dx * stubLengthFraction}
             y2={source.y + dy * stubLengthFraction}
-            stroke="#94a3b8"
-            strokeWidth={1.5}
+            stroke="#64748b"
+            strokeWidth={1.2}
             strokeLinecap="round"
+            opacity={0.42}
           />,
           <line
             key={`${i}-${edge.source}-${edge.target}-t`}
@@ -32,9 +33,10 @@ export function StubsRenderer({ nodes, edges, stubLengthFraction = 0.25 }: EdgeR
             y1={target.y}
             x2={target.x - dx * stubLengthFraction}
             y2={target.y - dy * stubLengthFraction}
-            stroke="#94a3b8"
-            strokeWidth={1.5}
+            stroke="#64748b"
+            strokeWidth={1.2}
             strokeLinecap="round"
+            opacity={0.42}
           />,
         ];
       })}
