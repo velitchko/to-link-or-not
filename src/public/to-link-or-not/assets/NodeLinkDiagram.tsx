@@ -2,6 +2,7 @@ import React, {
   useEffect, useRef, useState, useCallback, useMemo,
 } from 'react';
 import { StimulusParams } from '../../../store/types';
+import { useStoreSelector } from '../../../store/store';
 import {
   StudyParameters,
   Condition,
@@ -24,6 +25,7 @@ import { getJsonAssetByPath } from '../../../utils/getStaticAsset';
 const WIDTH = 800;
 const HEIGHT = 560;
 const NODE_RADIUS = 12;
+const DEBUG_ADJACENCY_COLOR = '#dc2626';
 
 const EDGE_RENDERERS: Record<Condition, React.FC<EdgeRendererProps>> = {
   traditional: TraditionalRenderer,
@@ -173,10 +175,20 @@ function getNodeCursor(
   return 'grab';
 }
 
+function getAdjacentNodeIds(nodeId: string | null, edges: StudyParameters['graph']['edges']): string[] {
+  if (!nodeId) return [];
+  return sortedUnique(edges.flatMap((edge) => {
+    if (edge.source === nodeId) return [edge.target];
+    if (edge.target === nodeId) return [edge.source];
+    return [];
+  }));
+}
+
 export default function NodeLinkDiagram({
   parameters,
   setAnswer,
 }: StimulusParams<StudyParameters>) {
+  const developmentModeEnabled = useStoreSelector((state) => state.modes.developmentModeEnabled);
   const {
     condition, graph: fallbackGraph, graphPath, task, taskPrompt, isTraining,
   } = parameters;
@@ -239,6 +251,29 @@ export default function NodeLinkDiagram({
   const anchorNodes = useMemo(
     () => (task === 'T2' ? [graph.groundTruth.T2.nodeA, graph.groundTruth.T2.nodeB] : []),
     [task, graph.groundTruth.T2.nodeA, graph.groundTruth.T2.nodeB],
+  );
+
+  const debugAdjacentNodeIds = useMemo(
+    () => (developmentModeEnabled ? getAdjacentNodeIds(hoveredNode, graph.edges) : []),
+    [developmentModeEnabled, hoveredNode, graph.edges],
+  );
+  const debugAdjacentNodeSet = useMemo(
+    () => new Set(debugAdjacentNodeIds),
+    [debugAdjacentNodeIds],
+  );
+  const debugIncidentEdges = useMemo(
+    () => (developmentModeEnabled && hoveredNode
+      ? graph.edges.filter((edge) => edge.source === hoveredNode || edge.target === hoveredNode)
+      : []),
+    [developmentModeEnabled, hoveredNode, graph.edges],
+  );
+  const debugHoveredNode = useMemo(
+    () => (hoveredNode ? graph.nodes.find((node) => node.id === hoveredNode) : undefined),
+    [hoveredNode, graph.nodes],
+  );
+  const debugAdjacentNodes = useMemo(
+    () => debugAdjacentNodeIds.map((id) => graph.nodes.find((node) => node.id === id) ?? { id }),
+    [debugAdjacentNodeIds, graph.nodes],
   );
 
   const handleLassoComplete = useCallback((nodeIds: string[], additive: boolean) => {
@@ -409,6 +444,28 @@ export default function NodeLinkDiagram({
                 onHover={setHoveredNode}
                 stubLengthFraction={graph.stubLengthFraction ?? 0.25}
               />
+              {developmentModeEnabled && debugIncidentEdges.length > 0 && (
+                <g className="debug-adjacency-edges" style={{ pointerEvents: 'none' }}>
+                  {debugIncidentEdges.map((edge) => {
+                    const source = positionedNodes.find((node) => node.id === edge.source);
+                    const target = positionedNodes.find((node) => node.id === edge.target);
+                    if (!source || !target) return null;
+                    return (
+                      <line
+                        key={`debug-${edge.source}-${edge.target}`}
+                        x1={source.x}
+                        y1={source.y}
+                        x2={target.x}
+                        y2={target.y}
+                        stroke={DEBUG_ADJACENCY_COLOR}
+                        strokeWidth={3}
+                        strokeLinecap="round"
+                        opacity={0.8}
+                      />
+                    );
+                  })}
+                </g>
+              )}
               <g className="nodes">
                 {positionedNodes.map((node) => (
                   <g key={node.id}>
@@ -419,8 +476,8 @@ export default function NodeLinkDiagram({
                       cy={node.y}
                       r={NODE_RADIUS}
                       fill={getNodeFill(node.id)}
-                      stroke={hoveredNode === node.id ? '#fbbf24' : 'white'}
-                      strokeWidth={hoveredNode === node.id ? 3 : 2}
+                      stroke={debugAdjacentNodeSet.has(node.id) ? DEBUG_ADJACENCY_COLOR : hoveredNode === node.id ? '#fbbf24' : 'white'}
+                      strokeWidth={debugAdjacentNodeSet.has(node.id) || hoveredNode === node.id ? 3 : 2}
                       style={{
                         cursor: getNodeCursor(node.id, anchorNodes, mode, submitted),
                         transition: 'fill 0.1s',
@@ -458,6 +515,36 @@ export default function NodeLinkDiagram({
           />
         )}
       </svg>
+
+      {developmentModeEnabled && debugHoveredNode && (
+        <div
+          data-testid="debug-adjacency-panel"
+          style={{
+            marginTop: '0.5rem',
+            padding: '0.5rem 0.75rem',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '6px',
+            color: '#7f1d1d',
+            fontSize: '0.8rem',
+            lineHeight: 1.4,
+          }}
+        >
+          <strong>Debug adjacency:</strong>
+          {' '}
+          {debugHoveredNode.label ?? debugHoveredNode.id}
+          {' '}
+          <span style={{ color: '#991b1b' }}>
+            (
+            {debugHoveredNode.id}
+            )
+          </span>
+          {' → '}
+          {debugAdjacentNodes.length > 0
+            ? debugAdjacentNodes.map((node) => `${node.label ?? node.id} (${node.id})`).join(', ')
+            : 'no adjacent nodes'}
+        </div>
+      )}
 
       <div style={{
         padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '1rem',
