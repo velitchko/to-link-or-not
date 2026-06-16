@@ -423,7 +423,7 @@ describe('NodeLinkDiagram', () => {
         .find((c) => c.getAttribute('data-node-id') === 'n1')!;
       fireEvent.click(n1);
       fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-      expect(screen.getByText(/one way to group/i)).toBeInTheDocument();
+      expect(screen.getByText(/largest cluster is the target/i)).toBeInTheDocument();
     });
 
     it('non-training: shows Answer recorded (no feedback banner)', () => {

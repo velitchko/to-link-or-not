@@ -35,7 +35,7 @@ const EDGE_RENDERERS: Record<Condition, React.FC<EdgeRendererProps>> = {
 const TASK_INSTRUCTIONS: Record<StudyParameters['task'], string> = {
   T1: 'Click the node you think is most important (most connected) in this network.',
   T2: 'Click all nodes that are common neighbors of the two highlighted nodes (shown in orange).',
-  T3: 'Click all nodes that form a distinct group or cluster. Submit when done.',
+  T3: 'Identify and select the largest cluster you see. Submit when done.',
 };
 
 const COMMUNITY_COLORS = ['#3b82f6', '#f97316', '#8b5cf6', '#ec4899', '#06b6d4'];
@@ -96,16 +96,31 @@ function computeTaskAnswer({
       exactMatch: isCorrect,
     };
   } else {
-    const communityOverlaps = graph.groundTruth.T3.communities.map((community, index) => {
-      const expected = sortedUnique(community);
-      const intersectionSize = countIntersection(selectedNodesSorted, expected);
-      const unionSize = new Set([...selectedNodesSorted, ...expected]).size;
+    const sortedCommunities = graph.groundTruth.T3.communities.map((community) => sortedUnique(community));
+    const targetCommunityIndex = graph.groundTruth.T3.targetCommunityIndex ?? sortedCommunities
+      .map((community, index) => ({ community, index }))
+      .reduce((best, current) => {
+        if (current.community.length !== best.community.length) {
+          return current.community.length > best.community.length ? current : best;
+        }
+        return current.community.join(' ') > best.community.join(' ') ? current : best;
+      }).index;
+    const expected = sortedUnique(
+      graph.groundTruth.T3.targetCommunity ?? sortedCommunities[targetCommunityIndex] ?? [],
+    );
+    const truePositives = countIntersection(selectedNodesSorted, expected);
+    const falsePositives = selectedNodesSorted.length - truePositives;
+    const falseNegatives = expected.length - truePositives;
+    isCorrect = falsePositives === 0 && falseNegatives === 0;
+    const communityOverlaps = sortedCommunities.map((community, index) => {
+      const intersectionSize = countIntersection(selectedNodesSorted, community);
+      const unionSize = new Set([...selectedNodesSorted, ...community]).size;
       return {
         communityIndex: index,
-        expectedNodes: expected,
+        expectedNodes: community,
         intersectionSize,
         selectedSize: selectedNodesSorted.length,
-        communitySize: expected.length,
+        communitySize: community.length,
         jaccard: unionSize > 0 ? intersectionSize / unionSize : 0,
       };
     });
@@ -114,10 +129,18 @@ function computeTaskAnswer({
       null,
     );
     metrics = {
+      expectedNodes: expected,
+      targetCommunityIndex,
+      placeholderNode: graph.groundTruth.T3.placeholderNode,
+      truePositives,
+      falsePositives,
+      falseNegatives,
+      precision: selectedNodesSorted.length > 0 ? truePositives / selectedNodesSorted.length : 0,
+      recall: expected.length > 0 ? truePositives / expected.length : 1,
       communityOverlaps,
       bestCommunityIndex: bestCommunity?.communityIndex,
       bestCommunityJaccard: bestCommunity?.jaccard,
-      exactMatch: false,
+      exactMatch: isCorrect,
     };
   }
 
@@ -448,7 +471,7 @@ export default function NodeLinkDiagram({
                   margin: 0, color: '#1d4ed8', fontSize: '0.875rem', fontWeight: 500,
                 }}
                 >
-                  ℹ Here&apos;s one way to group this network. Colors show suggested communities.
+                  ℹ The largest cluster is the target. Colors show suggested communities.
                 </p>
               )}
               {task !== 'T3' && trainingCorrect && (
