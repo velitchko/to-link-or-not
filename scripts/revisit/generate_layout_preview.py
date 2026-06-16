@@ -74,7 +74,7 @@ def main() -> None:
       <h2>{html.escape(rel)}</h2>
       <div class="pair">
         {svg(before, 'Before: origin/main coordinates')}
-        {svg(after, 'After: balanced-v2 precomputed coordinates')}
+        {svg(after, 'After: community-v3 readable-organic coordinates')}
       </div>
     </section>''')
 
@@ -99,7 +99,7 @@ def main() -> None:
 </head>
 <body>
   <h1>LFR precomputed layout preview</h1>
-  <p class="note">Static before/after preview generated from JSON coordinates only. This is intentionally not a runtime rendering-style change.</p>
+  <p class="note">Static before/after preview generated from JSON coordinates only. This is intentionally not a runtime rendering-style change. The community-v3 layout increases node spacing and community separability while preserving force-directed organic structure.</p>
   {''.join(sections)}
 </body>
 </html>

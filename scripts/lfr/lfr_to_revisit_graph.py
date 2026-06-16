@@ -79,10 +79,10 @@ def compute_precomputed_layout(
     This intentionally avoids browser-side force simulation. It uses the
     approved static "force-organic" layout: deterministic soft community-cloud
     initialization, edge springs, node repulsion, and weak community gravity.
-    The v2 parameters keep communities closer together, add slightly stronger
-    global centering/repulsion, and include a soft collision pass so the stored
-    coordinates read less like separated islands without relying on runtime SVG
-    styling.
+    The v3 parameters respond to the T3 readability issue: they use more canvas,
+    stronger node repulsion/collision spacing, and moderate community-aware
+    separation while preserving the force-directed, non-radial character of the
+    drawing. Runtime SVG styling is deliberately not part of this fix.
     """
     if not nodes:
         return
@@ -119,9 +119,10 @@ def compute_precomputed_layout(
             ))
         return targets
 
-    # Keep community targets close enough to avoid separated radial islands;
-    # topology/community membership still shapes the final drawing through springs.
-    community_centers = community_targets(drawable_width * 0.16, drawable_height * 0.14)
+    # Moderate target separation gives participants a fair visual cue for T3
+    # without returning to the old explicit radial-island layout. Springs,
+    # repulsion, and cooling still determine the final organic geometry.
+    community_centers = community_targets(drawable_width * 0.235, drawable_height * 0.205)
 
     positions: dict[str, list[float]] = {}
     velocities: dict[str, list[float]] = {node_id: [0.0, 0.0] for node_id in node_ids}
@@ -135,7 +136,7 @@ def compute_precomputed_layout(
             {node_id for node_id in community_nodes if primary_community.get(node_id) == community_idx},
             key=lambda node_id: (-len(adjacency.get(node_id, set())), node_id),
         )
-        local_radius = max(82.0, min(128.0, 42.0 + 7.0 * math.sqrt(len(unique_nodes))))
+        local_radius = max(100.0, min(152.0, 56.0 + 8.5 * math.sqrt(len(unique_nodes))))
         angle_offset = rng.random() * 2 * math.pi
         for rank, node_id in enumerate(unique_nodes):
             angle = angle_offset + rank * 2.399963229728653  # golden angle
@@ -157,7 +158,7 @@ def compute_precomputed_layout(
 
     edge_pairs = [(edge['source'], edge['target']) for edge in edges]
 
-    for step in range(460):
+    for step in range(560):
         forces: dict[str, list[float]] = {node_id: [0.0, 0.0] for node_id in node_ids}
 
         # O(n^2) is acceptable for the fixed 120-node study graphs.
@@ -169,7 +170,7 @@ def compute_precomputed_layout(
                 dy = ay - by
                 distance_sq = max(25.0, dx * dx + dy * dy)
                 distance = math.sqrt(distance_sq)
-                force = 1550.0 / distance_sq
+                force = 2550.0 / distance_sq
                 fx = force * dx / distance
                 fy = force * dy / distance
                 forces[node_a][0] += fx
@@ -184,8 +185,8 @@ def compute_precomputed_layout(
             dy = ty - sy
             distance = max(1.0, math.hypot(dx, dy))
             same_community = primary_community.get(source) == primary_community.get(target)
-            desired = 52.0 if same_community else 76.0
-            force = 0.020 * (distance - desired)
+            desired = 58.0 if same_community else 100.0
+            force = (0.023 if same_community else 0.015) * (distance - desired)
             fx = force * dx / distance
             fy = force * dy / distance
             forces[source][0] += fx
@@ -199,10 +200,10 @@ def compute_precomputed_layout(
             tx, ty = community_centers[community_idx]
             # Weak community gravity plus canvas centering; this is what keeps
             # the layout organic rather than separated into radial islands.
-            forces[node_id][0] += 0.008 * (tx - x) + 0.008 * (center_x - x)
-            forces[node_id][1] += 0.008 * (ty - y) + 0.008 * (center_y - y)
+            forces[node_id][0] += 0.017 * (tx - x) + 0.007 * (center_x - x)
+            forces[node_id][1] += 0.017 * (ty - y) + 0.007 * (center_y - y)
 
-        temperature = max(0.15, 1.0 - step / 460)
+        temperature = max(0.12, 1.0 - step / 560)
         # Soft collision pass: spread near-overlapping labels/nodes before integration.
         for a_idx, node_a in enumerate(node_ids):
             ax, ay = positions[node_a]
@@ -211,9 +212,9 @@ def compute_precomputed_layout(
                 dx = ax - bx
                 dy = ay - by
                 distance = max(0.1, math.hypot(dx, dy))
-                min_distance = 16.0
+                min_distance = 21.0
                 if distance < min_distance:
-                    push = (min_distance - distance) * 0.035
+                    push = (min_distance - distance) * 0.055
                     fx = push * dx / distance
                     fy = push * dy / distance
                     forces[node_a][0] += fx
@@ -222,8 +223,8 @@ def compute_precomputed_layout(
                     forces[node_b][1] -= fy
 
         for node_id in node_ids:
-            velocities[node_id][0] = (velocities[node_id][0] + forces[node_id][0]) * 0.78
-            velocities[node_id][1] = (velocities[node_id][1] + forces[node_id][1]) * 0.78
+            velocities[node_id][0] = (velocities[node_id][0] + forces[node_id][0]) * 0.76
+            velocities[node_id][1] = (velocities[node_id][1] + forces[node_id][1]) * 0.76
             positions[node_id][0] = min(
                 width - LAYOUT_MARGIN,
                 max(LAYOUT_MARGIN, positions[node_id][0] + velocities[node_id][0] * temperature),
@@ -307,13 +308,13 @@ def main() -> None:
         'generator': 'LFR unweighted_undirected benchmark',
         'generatorSource': 'https://github.com/andrealancichinetti/LFRbenchmarks',
         'layout': {
-            'type': 'precomputed-force-organic-balanced-v2',
+            'type': 'precomputed-force-organic-community-v3',
             'width': LAYOUT_WIDTH,
             'height': LAYOUT_HEIGHT,
             'margin': LAYOUT_MARGIN,
             'seed': params.get('seed'),
-            'algorithm': 'static force-organic with balanced community gravity',
-            'communitySpacing': 'balanced-v2-compact-organic',
+            'algorithm': 'static force-organic with moderate community separation and collision spacing',
+            'communitySpacing': 'community-v3-readable-organic',
         },
         'parameters': params,
         'nodes': nodes,
