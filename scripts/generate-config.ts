@@ -353,6 +353,28 @@ const staticComponents: Record<string, object> = {
         required: true,
       },
       {
+        id: 'same-network-twice',
+        prompt: 'Do you think you saw the same network twice?',
+        type: 'radio',
+        options: ['Yes', 'No', 'Not sure'],
+        required: true,
+      },
+      {
+        id: 'unique-datasets-count',
+        prompt: 'How many unique datasets did you see in this experiment?',
+        type: 'numerical',
+        min: 1,
+        max: 60,
+        required: true,
+      },
+      {
+        id: 'task-solving-strategy',
+        prompt: 'Could you step me through exactly how you solved the tasks?',
+        type: 'longText',
+        placeholder: 'Describe what you looked for, what you remembered, and how your strategy changed across tasks or representations.',
+        required: true,
+      },
+      {
         id: 'reflection',
         prompt: 'Any final thoughts or comments about the representations?',
         type: 'longText',
