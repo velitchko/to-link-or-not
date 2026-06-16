@@ -24,7 +24,10 @@ import { getJsonAssetByPath } from '../../../utils/getStaticAsset';
 
 const WIDTH = 800;
 const HEIGHT = 560;
-const NODE_RADIUS = 12;
+const NODE_RADIUS = 10;
+const LABEL_FONT_SIZE = 12;
+const LABEL_OFFSET_X = NODE_RADIUS + 4;
+const LABEL_OFFSET_Y = -(NODE_RADIUS + 4);
 const DEBUG_ADJACENCY_COLOR = '#dc2626';
 const LABEL_TOOLTIP_FONT_SIZE = 20;
 const LABEL_TOOLTIP_PADDING_X = 10;
@@ -501,11 +504,17 @@ export default function NodeLinkDiagram({
                     />
                     {node.label && (
                       <text
-                        x={node.x}
-                        y={node.y + NODE_RADIUS + 14}
-                        textAnchor="middle"
-                        fontSize={11}
-                        fill="#374151"
+                        x={node.x + LABEL_OFFSET_X}
+                        y={node.y + LABEL_OFFSET_Y}
+                        textAnchor="start"
+                        fontSize={LABEL_FONT_SIZE}
+                        fontWeight={600}
+                        fill="#111827"
+                        stroke="white"
+                        strokeWidth={4}
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        paintOrder="stroke fill"
                         style={{ pointerEvents: 'none', userSelect: 'none' }}
                       >
                         {node.label}

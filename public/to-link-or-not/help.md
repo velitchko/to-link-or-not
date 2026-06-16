@@ -41,4 +41,4 @@ Select all nodes that form one distinct, tightly-connected cluster. There is no 
 
 If the diagram does not load within a few seconds, refresh the page. Your progress is saved after each submitted answer, so you will not lose completed trials.
 
-If you encounter a persistent problem, please contact the researcher: [researcher-email@institution.edu]
+If you encounter a persistent problem, please contact the researcher: [velitchko.filipov@tuwien.ac.at](mailto:velitchko.filipov@tuwien.ac.at)
