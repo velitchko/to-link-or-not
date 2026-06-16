@@ -9,6 +9,14 @@ import {
 import NodeLinkDiagram from '../NodeLinkDiagram';
 import { StudyParameters } from '../types';
 
+let developmentModeEnabled = false;
+
+vi.mock('../../../../store/store', () => ({
+  useStoreSelector: (selector: (state: { modes: { developmentModeEnabled: boolean } }) => unknown) => selector({
+    modes: { developmentModeEnabled },
+  }),
+}));
+
 // Mock useForceLayout to return immediately with preset positions
 vi.mock('../hooks/useForceLayout', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,6 +90,7 @@ const makeTrainingParams = (
 describe('NodeLinkDiagram', () => {
   beforeEach(() => {
     capturedLassoComplete = null;
+    developmentModeEnabled = false;
   });
 
   it('renders a circle for each node', () => {
@@ -180,6 +189,43 @@ describe('NodeLinkDiagram', () => {
       recall: 1,
       exactMatch: true,
     });
+  });
+
+  it('does not show debug adjacency in normal participant mode', () => {
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    fireEvent.mouseEnter(n2);
+
+    expect(screen.queryByTestId('debug-adjacency-panel')).not.toBeInTheDocument();
+    expect(container.querySelectorAll('g.debug-adjacency-edges line')).toHaveLength(0);
+    const n1 = Array.from(container.querySelectorAll('circle.node-circle'))
+      .find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    expect(n1.getAttribute('stroke')).toBe('white');
+  });
+
+  it('shows adjacent nodes and incident edges in development mode hover', () => {
+    developmentModeEnabled = true;
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    const circles = container.querySelectorAll('circle.node-circle');
+    const n1 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n1')!;
+    const n2 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n2')!;
+    const n3 = Array.from(circles).find((c) => c.getAttribute('data-node-id') === 'n3')!;
+
+    fireEvent.mouseEnter(n2);
+
+    expect(screen.getByTestId('debug-adjacency-panel')).toHaveTextContent('B (n2) → A (n1), C (n3)');
+    expect(container.querySelectorAll('g.debug-adjacency-edges line')).toHaveLength(2);
+    expect(n1.getAttribute('stroke')).toBe('#dc2626');
+    expect(n3.getAttribute('stroke')).toBe('#dc2626');
+    expect(n2.getAttribute('stroke')).toBe('#fbbf24');
+
+    fireEvent.mouseLeave(n2);
+    expect(screen.queryByTestId('debug-adjacency-panel')).not.toBeInTheDocument();
   });
 
   it('renders the InteractionStrip with mode buttons', () => {
