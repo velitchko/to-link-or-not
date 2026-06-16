@@ -33,6 +33,9 @@ export interface GroundTruthT2 {
 
 export interface GroundTruthT3 {
   communities: string[][]; // each inner array is a community
+  targetCommunityIndex?: number; // largest embedded LFR community for exact T3 scoring
+  targetCommunity?: string[];
+  placeholderNode?: string;
 }
 
 export interface T1AnswerMetrics {
@@ -62,10 +65,18 @@ export interface T3CommunityOverlap {
 }
 
 export interface T3AnswerMetrics {
+  expectedNodes: string[];
+  targetCommunityIndex?: number;
+  placeholderNode?: string;
+  truePositives: number;
+  falsePositives: number;
+  falseNegatives: number;
+  precision: number;
+  recall: number;
   communityOverlaps: T3CommunityOverlap[];
   bestCommunityIndex?: number;
   bestCommunityJaccard?: number;
-  exactMatch: false;
+  exactMatch: boolean;
 }
 
 export type TaskAnswerMetrics = T1AnswerMetrics | T2AnswerMetrics | T3AnswerMetrics;

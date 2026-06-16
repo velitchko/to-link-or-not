@@ -22,7 +22,7 @@ const LFR_CONDITION_TO_STUDY_CONDITION: Record<LfrConditionDir, Condition> = {
 const TASK_PROMPTS: Record<TaskType, string> = {
   T1: 'Which node do you think is the most important (well-connected) in this network?',
   T2: 'Select all nodes that are common neighbors of the two highlighted (orange) nodes.',
-  T3: 'Click all nodes that you perceive as belonging to the same group or cluster.',
+  T3: 'Identify and select the largest cluster you see',
 };
 
 const TASKS: TaskType[] = ['T1', 'T2', 'T3'];
