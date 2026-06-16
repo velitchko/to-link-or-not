@@ -14,12 +14,12 @@ from lfr_to_revisit_graph import LAYOUT_HEIGHT, LAYOUT_MARGIN, LAYOUT_WIDTH, com
 
 GRAPH_ROOT = Path('public/to-link-or-not/graphs/lfr')
 LAYOUT_METADATA = {
-    'type': 'precomputed-force-organic-balanced-v2',
+    'type': 'precomputed-force-organic-community-v3',
     'width': LAYOUT_WIDTH,
     'height': LAYOUT_HEIGHT,
     'margin': LAYOUT_MARGIN,
-    'algorithm': 'static force-organic with balanced community gravity',
-    'communitySpacing': 'balanced-v2-compact-organic',
+    'algorithm': 'static force-organic with moderate community separation and collision spacing',
+    'communitySpacing': 'community-v3-readable-organic',
 }
 
 
