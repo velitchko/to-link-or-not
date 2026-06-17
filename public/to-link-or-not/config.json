@@ -112,6 +112,11 @@
           "required": false
         },
         {
+          "id": "study-trial-note",
+          "prompt": "No feedback is shown during real study trials. After submitting, click Next to continue.",
+          "type": "textOnly"
+        },
+        {
           "id": "comment",
           "prompt": "Describe your reasoning or mental image of the network.",
           "type": "longText",
@@ -482,6 +487,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -786,6 +796,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -1090,6 +1105,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -1394,6 +1414,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -1421,8 +1446,13 @@
       "type": "questionnaire",
       "response": [
         {
+          "id": "traditional-tlx-intro",
+          "prompt": "## Workload ratings\n\nPlease rate the workload for this condition: **Traditional links: All connections are shown as solid lines throughout the task.**.\n\nThe following NASA-TLX components are grouped together here; each item includes a brief explanation.",
+          "type": "textOnly"
+        },
+        {
           "id": "traditional-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
+          "prompt": "Mental Demand: How mentally demanding was this condition?\n\n_Thinking, deciding, calculating, remembering, looking, and searching._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1431,7 +1461,7 @@
         },
         {
           "id": "traditional-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
+          "prompt": "Temporal Demand: How hurried or rushed was the pace of the tasks in this condition?\n\n_Time pressure from the pace at which the tasks occurred._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1440,16 +1470,16 @@
         },
         {
           "id": "traditional-performance",
-          "prompt": "Performance: How much performance was required?",
+          "prompt": "Performance: How successful were you in accomplishing what you were asked to do?\n\n_Your own assessment of how well you completed the tasks._",
           "type": "likert",
           "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "leftLabel": "Perfect",
+          "rightLabel": "Failure",
           "required": true
         },
         {
           "id": "traditional-effort",
-          "prompt": "Effort: How much effort was required?",
+          "prompt": "Effort: How hard did you have to work to accomplish your level of performance?\n\n_The amount of work required to complete the tasks._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1458,7 +1488,7 @@
         },
         {
           "id": "traditional-frustration",
-          "prompt": "Frustration: How much frustration was required?",
+          "prompt": "Frustration: How insecure, discouraged, irritated, stressed, or annoyed were you?\n\n_Emotional response while working with this condition._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1478,8 +1508,13 @@
       "type": "questionnaire",
       "response": [
         {
+          "id": "no-link-tlx-intro",
+          "prompt": "## Workload ratings\n\nPlease rate the workload for this condition: **No links: No connection lines are drawn; use the node positions and layout alone.**.\n\nThe following NASA-TLX components are grouped together here; each item includes a brief explanation.",
+          "type": "textOnly"
+        },
+        {
           "id": "no-link-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
+          "prompt": "Mental Demand: How mentally demanding was this condition?\n\n_Thinking, deciding, calculating, remembering, looking, and searching._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1488,7 +1523,7 @@
         },
         {
           "id": "no-link-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
+          "prompt": "Temporal Demand: How hurried or rushed was the pace of the tasks in this condition?\n\n_Time pressure from the pace at which the tasks occurred._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1497,16 +1532,16 @@
         },
         {
           "id": "no-link-performance",
-          "prompt": "Performance: How much performance was required?",
+          "prompt": "Performance: How successful were you in accomplishing what you were asked to do?\n\n_Your own assessment of how well you completed the tasks._",
           "type": "likert",
           "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "leftLabel": "Perfect",
+          "rightLabel": "Failure",
           "required": true
         },
         {
           "id": "no-link-effort",
-          "prompt": "Effort: How much effort was required?",
+          "prompt": "Effort: How hard did you have to work to accomplish your level of performance?\n\n_The amount of work required to complete the tasks._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1515,7 +1550,7 @@
         },
         {
           "id": "no-link-frustration",
-          "prompt": "Frustration: How much frustration was required?",
+          "prompt": "Frustration: How insecure, discouraged, irritated, stressed, or annoyed were you?\n\n_Emotional response while working with this condition._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1535,8 +1570,13 @@
       "type": "questionnaire",
       "response": [
         {
+          "id": "on-demand-tlx-intro",
+          "prompt": "## Workload ratings\n\nPlease rate the workload for this condition: **On-demand links: Connections are hidden by default and appear only when hovering over a node.**.\n\nThe following NASA-TLX components are grouped together here; each item includes a brief explanation.",
+          "type": "textOnly"
+        },
+        {
           "id": "on-demand-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
+          "prompt": "Mental Demand: How mentally demanding was this condition?\n\n_Thinking, deciding, calculating, remembering, looking, and searching._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1545,7 +1585,7 @@
         },
         {
           "id": "on-demand-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
+          "prompt": "Temporal Demand: How hurried or rushed was the pace of the tasks in this condition?\n\n_Time pressure from the pace at which the tasks occurred._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1554,16 +1594,16 @@
         },
         {
           "id": "on-demand-performance",
-          "prompt": "Performance: How much performance was required?",
+          "prompt": "Performance: How successful were you in accomplishing what you were asked to do?\n\n_Your own assessment of how well you completed the tasks._",
           "type": "likert",
           "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "leftLabel": "Perfect",
+          "rightLabel": "Failure",
           "required": true
         },
         {
           "id": "on-demand-effort",
-          "prompt": "Effort: How much effort was required?",
+          "prompt": "Effort: How hard did you have to work to accomplish your level of performance?\n\n_The amount of work required to complete the tasks._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1572,7 +1612,7 @@
         },
         {
           "id": "on-demand-frustration",
-          "prompt": "Frustration: How much frustration was required?",
+          "prompt": "Frustration: How insecure, discouraged, irritated, stressed, or annoyed were you?\n\n_Emotional response while working with this condition._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1592,8 +1632,13 @@
       "type": "questionnaire",
       "response": [
         {
+          "id": "stubs-tlx-intro",
+          "prompt": "## Workload ratings\n\nPlease rate the workload for this condition: **Link stubs: Short partial edge stubs show the number and direction of connections without drawing full links.**.\n\nThe following NASA-TLX components are grouped together here; each item includes a brief explanation.",
+          "type": "textOnly"
+        },
+        {
           "id": "stubs-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
+          "prompt": "Mental Demand: How mentally demanding was this condition?\n\n_Thinking, deciding, calculating, remembering, looking, and searching._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1602,7 +1647,7 @@
         },
         {
           "id": "stubs-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
+          "prompt": "Temporal Demand: How hurried or rushed was the pace of the tasks in this condition?\n\n_Time pressure from the pace at which the tasks occurred._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1611,16 +1656,16 @@
         },
         {
           "id": "stubs-performance",
-          "prompt": "Performance: How much performance was required?",
+          "prompt": "Performance: How successful were you in accomplishing what you were asked to do?\n\n_Your own assessment of how well you completed the tasks._",
           "type": "likert",
           "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "leftLabel": "Perfect",
+          "rightLabel": "Failure",
           "required": true
         },
         {
           "id": "stubs-effort",
-          "prompt": "Effort: How much effort was required?",
+          "prompt": "Effort: How hard did you have to work to accomplish your level of performance?\n\n_The amount of work required to complete the tasks._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",
@@ -1629,7 +1674,7 @@
         },
         {
           "id": "stubs-frustration",
-          "prompt": "Frustration: How much frustration was required?",
+          "prompt": "Frustration: How insecure, discouraged, irritated, stressed, or annoyed were you?\n\n_Emotional response while working with this condition._",
           "type": "likert",
           "numItems": 7,
           "leftLabel": "Very Low",

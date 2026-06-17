@@ -25,14 +25,7 @@ import { getJsonAssetByPath } from '../../../utils/getStaticAsset';
 const WIDTH = 800;
 const HEIGHT = 560;
 const NODE_RADIUS = 10;
-const LABEL_FONT_SIZE = 12;
-const LABEL_OFFSET_X = NODE_RADIUS + 4;
-const LABEL_OFFSET_Y = -(NODE_RADIUS + 4);
 const DEBUG_ADJACENCY_COLOR = '#dc2626';
-const LABEL_TOOLTIP_FONT_SIZE = 20;
-const LABEL_TOOLTIP_PADDING_X = 10;
-const LABEL_TOOLTIP_PADDING_Y = 6;
-const LABEL_TOOLTIP_HEIGHT = LABEL_TOOLTIP_FONT_SIZE + LABEL_TOOLTIP_PADDING_Y * 2;
 
 const EDGE_RENDERERS: Record<Condition, React.FC<EdgeRendererProps>> = {
   traditional: TraditionalRenderer,
@@ -191,17 +184,13 @@ function getAdjacentNodeIds(nodeId: string | null, edges: StudyParameters['graph
   }));
 }
 
-function getLabelTooltipWidth(label: string): number {
-  return Math.max(48, label.length * 12 + LABEL_TOOLTIP_PADDING_X * 2);
-}
-
 export default function NodeLinkDiagram({
   parameters,
   setAnswer,
 }: StimulusParams<StudyParameters>) {
   const developmentModeEnabled = useStoreSelector((state) => state.modes.developmentModeEnabled);
   const {
-    condition, graph: fallbackGraph, graphPath, task, taskPrompt, isTraining,
+    condition, graph: fallbackGraph, graphPath, task, taskPrompt, isTraining, showLabels,
   } = parameters;
 
   const [graph, setGraph] = useState(fallbackGraph);
@@ -286,11 +275,7 @@ export default function NodeLinkDiagram({
     () => debugAdjacentNodeIds.map((id) => graph.nodes.find((node) => node.id === id) ?? { id }),
     [debugAdjacentNodeIds, graph.nodes],
   );
-  const hoveredPositionedNode = useMemo(
-    () => (hoveredNode ? positionedNodes.find((node) => node.id === hoveredNode) : undefined),
-    [hoveredNode, positionedNodes],
-  );
-  const hoveredNodeLabel = hoveredPositionedNode?.label ?? hoveredPositionedNode?.id;
+  const renderDevelopmentLabels = developmentModeEnabled && showLabels === true;
 
   const handleLassoComplete = useCallback((nodeIds: string[], additive: boolean) => {
     if (submitted) return;
@@ -501,67 +486,14 @@ export default function NodeLinkDiagram({
                       onMouseEnter={() => setHoveredNode(node.id)}
                       onMouseLeave={() => setHoveredNode(null)}
                       onClick={(e) => handleNodeClick(node.id, e)}
-                    />
-                    {node.label && (
-                      <text
-                        x={node.x + LABEL_OFFSET_X}
-                        y={node.y + LABEL_OFFSET_Y}
-                        textAnchor="start"
-                        fontSize={LABEL_FONT_SIZE}
-                        fontWeight={600}
-                        fill="#111827"
-                        stroke="white"
-                        strokeWidth={4}
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        paintOrder="stroke fill"
-                        style={{ pointerEvents: 'none', userSelect: 'none' }}
-                      >
-                        {node.label}
-                      </text>
-                    )}
+                    >
+                      {renderDevelopmentLabels && node.label && (
+                        <title>{node.label}</title>
+                      )}
+                    </circle>
                   </g>
                 ))}
               </g>
-              {hoveredPositionedNode && hoveredNodeLabel && (() => {
-                const tooltipWidth = getLabelTooltipWidth(hoveredNodeLabel);
-                const tooltipX = Math.min(
-                  Math.max(hoveredPositionedNode.x - tooltipWidth / 2, 4),
-                  WIDTH - tooltipWidth - 4,
-                );
-                const preferredY = hoveredPositionedNode.y - NODE_RADIUS - LABEL_TOOLTIP_HEIGHT - 8;
-                const tooltipY = preferredY >= 4
-                  ? preferredY
-                  : hoveredPositionedNode.y + NODE_RADIUS + 8;
-
-                return (
-                  <g
-                    className="node-label-tooltip"
-                    data-testid="node-label-tooltip"
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    <rect
-                      x={tooltipX}
-                      y={tooltipY}
-                      width={tooltipWidth}
-                      height={LABEL_TOOLTIP_HEIGHT}
-                      rx={6}
-                      fill="#111827"
-                      opacity={0.92}
-                    />
-                    <text
-                      x={tooltipX + tooltipWidth / 2}
-                      y={tooltipY + LABEL_TOOLTIP_PADDING_Y + LABEL_TOOLTIP_FONT_SIZE - 3}
-                      textAnchor="middle"
-                      fontSize={LABEL_TOOLTIP_FONT_SIZE}
-                      fontWeight={700}
-                      fill="white"
-                    >
-                      {hoveredNodeLabel}
-                    </text>
-                  </g>
-                );
-              })()}
             </>
           )}
         </g>

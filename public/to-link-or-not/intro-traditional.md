@@ -2,6 +2,8 @@
 
 In this block, connections between nodes are drawn as **solid lines**.
 
+**Feedback note:** training tasks provide feedback after you submit. Real study trials in this block do **not** provide correctness feedback; after submitting, click **Next** to continue.
+
 ## What You Will See
 
 - Every connection in the network is visible at all times as a line between two nodes.

@@ -30,17 +30,44 @@ const LFR_CONDITION_DIRS = ['condition_1', 'condition_2', 'condition_3', 'condit
 
 function nodeLinkTrialResponses() {
   return [
-    { id: 'task-answer', prompt: 'Your answer', type: 'reactive' },
-    { id: 'isCorrect', prompt: 'Correct answer?', type: 'reactive', hidden: true, required: false },
-    { id: 'responseTimeMs', prompt: 'Response time (ms)', type: 'reactive', hidden: true, required: false },
-    { id: 'condition', prompt: 'Link visibility condition', type: 'reactive', hidden: true, required: false },
-    { id: 'task', prompt: 'Task', type: 'reactive', hidden: true, required: false },
-    { id: 'graphId', prompt: 'Graph ID', type: 'reactive', hidden: true, required: false },
-    { id: 'selectedNodes', prompt: 'Selected nodes', type: 'reactive', hidden: true, required: false },
-    { id: 'selectedNodeCount', prompt: 'Selected node count', type: 'reactive', hidden: true, required: false },
-    { id: 'groundTruthSnapshot', prompt: 'Ground truth snapshot', type: 'reactive', hidden: true, required: false },
-    { id: 'metrics', prompt: 'Task metrics', type: 'reactive', hidden: true, required: false },
-    { id: 'interactionsUsed', prompt: 'Interactions used', type: 'reactive', hidden: true, required: false },
+    {
+      id: 'task-answer', prompt: 'Your answer', type: 'reactive',
+    },
+    {
+      id: 'isCorrect', prompt: 'Correct answer?', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'responseTimeMs', prompt: 'Response time (ms)', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'condition', prompt: 'Link visibility condition', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'task', prompt: 'Task', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'graphId', prompt: 'Graph ID', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'selectedNodes', prompt: 'Selected nodes', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'selectedNodeCount', prompt: 'Selected node count', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'groundTruthSnapshot', prompt: 'Ground truth snapshot', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'metrics', prompt: 'Task metrics', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'interactionsUsed', prompt: 'Interactions used', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'study-trial-note',
+      prompt: 'No feedback is shown during real study trials. After submitting, click Next to continue.',
+      type: 'textOnly',
+    },
     {
       id: 'comment',
       prompt: 'Describe your reasoning or mental image of the network.',
@@ -52,7 +79,14 @@ function nodeLinkTrialResponses() {
 }
 
 function nodeLinkTrainingResponses() {
-  return nodeLinkTrialResponses().filter((response) => response.id !== 'comment');
+  return [
+    ...nodeLinkTrialResponses().filter((response) => response.id !== 'comment' && response.id !== 'study-trial-note'),
+    {
+      id: 'training-feedback-note',
+      prompt: 'Training task: after you submit, the diagram will show feedback so you can learn the interaction.',
+      type: 'textOnly',
+    },
+  ];
 }
 
 function getGraphFiles(conditionDir: LfrConditionDir): string[] {
@@ -151,20 +185,62 @@ const CONDITION_REMINDERS: Record<Condition, string> = {
 function nasaTlxItems(condition: Condition) {
   const conditionReminder = CONDITION_REMINDERS[condition];
   const dimensions = [
-    { id: 'mental-demand', label: 'Mental Demand' },
-    { id: 'temporal-demand', label: 'Temporal Demand' },
-    { id: 'performance', label: 'Performance' },
-    { id: 'effort', label: 'Effort' },
-    { id: 'frustration', label: 'Frustration' },
-  ];
-  return [
-    ...dimensions.map((d) => ({
-      id: `${condition}-${d.id}`,
-      prompt: `${d.label}: How much ${d.id.replace('-', ' ')} was required?`,
-      type: 'likert',
-      numItems: 7,
+    {
+      id: 'mental-demand',
+      label: 'Mental Demand',
+      prompt: 'Mental Demand: How mentally demanding was this condition?',
+      explanation: 'Thinking, deciding, calculating, remembering, looking, and searching.',
       leftLabel: 'Very Low',
       rightLabel: 'Very High',
+    },
+    {
+      id: 'temporal-demand',
+      label: 'Temporal Demand',
+      prompt: 'Temporal Demand: How hurried or rushed was the pace of the tasks in this condition?',
+      explanation: 'Time pressure from the pace at which the tasks occurred.',
+      leftLabel: 'Very Low',
+      rightLabel: 'Very High',
+    },
+    {
+      id: 'performance',
+      label: 'Performance',
+      prompt: 'Performance: How successful were you in accomplishing what you were asked to do?',
+      explanation: 'Your own assessment of how well you completed the tasks.',
+      leftLabel: 'Perfect',
+      rightLabel: 'Failure',
+    },
+    {
+      id: 'effort',
+      label: 'Effort',
+      prompt: 'Effort: How hard did you have to work to accomplish your level of performance?',
+      explanation: 'The amount of work required to complete the tasks.',
+      leftLabel: 'Very Low',
+      rightLabel: 'Very High',
+    },
+    {
+      id: 'frustration',
+      label: 'Frustration',
+      prompt: 'Frustration: How insecure, discouraged, irritated, stressed, or annoyed were you?',
+      explanation: 'Emotional response while working with this condition.',
+      leftLabel: 'Very Low',
+      rightLabel: 'Very High',
+    },
+  ];
+  return [
+    {
+      id: `${condition}-tlx-intro`,
+      prompt: `## Workload ratings\n\nPlease rate the workload for this condition: **${conditionReminder}**.
+
+The following NASA-TLX components are grouped together here; each item includes a brief explanation.`,
+      type: 'textOnly',
+    },
+    ...dimensions.map((d) => ({
+      id: `${condition}-${d.id}`,
+      prompt: `${d.prompt}\n\n_${d.explanation}_`,
+      type: 'likert',
+      numItems: 7,
+      leftLabel: d.leftLabel,
+      rightLabel: d.rightLabel,
       required: true,
     })),
     {
