@@ -46,7 +46,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Write out playwright version
-        run: yarn --silent playwright --version > .playwright-version
+        run: npx playwright --version > .playwright-version
 
       - name: ⚡️ Cache playwright binaries
         uses: actions/cache@v4
@@ -57,7 +57,7 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: yarn playwright install --with-deps ${{ matrix.project }}
+        run: npx playwright install --with-deps ${{ matrix.project }}
 
       - name: Run Playwright tests
-        run: yarn test --project=${{ matrix.project }}
+        run: npx playwright test --project=${{ matrix.project }}
