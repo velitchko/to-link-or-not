@@ -395,7 +395,7 @@ export default function NodeLinkDiagram({
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: `${WIDTH}px`, margin: '0 auto' }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: `${WIDTH}px`, margin: '0 auto', position: 'relative' }}>
       <div
         style={{
           padding: '0.75rem 1rem',
@@ -513,6 +513,10 @@ export default function NodeLinkDiagram({
         <div
           data-testid="debug-adjacency-panel"
           style={{
+            position: 'absolute',
+            zIndex: 10,
+            left: '0.75rem',
+            right: '0.75rem',
             marginTop: '0.5rem',
             padding: '0.5rem 0.75rem',
             background: '#fef2f2',
