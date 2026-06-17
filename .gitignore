@@ -43,3 +43,4 @@ supabase/volumes/db/data
 
 # Local generator/vendor caches
 .cache/
+coverage/

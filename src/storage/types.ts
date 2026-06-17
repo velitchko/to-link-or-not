@@ -30,9 +30,6 @@ import { ParticipantMetadata, Sequence, StoredAnswer } from '../store/types';
  *   },
  *   "startTime": 1711641174858,
  *   "endTime": 1711641178836,
- *   "provenanceGraph":{
- *     ...
- *   },
  *   "windowEvents": [
  *     ...
  *   ]
@@ -40,9 +37,8 @@ import { ParticipantMetadata, Sequence, StoredAnswer } from '../store/types';
  * ```
  * The keys of this object are the names of the components with an additional underscore and number appended to the end. This is done so that the study creator can discern between not only the components but also between the various instances of the same component when necessary. All times are in **epoch milliseconds**.
  *
- * :::info
- * The `"provenanceGraph"` key will only exist if the component is a React component and if it is utilizing Trrack. See [here](../StoredAnswer) for more details.
- * :::
+ * Provenance graphs exported from Trrack are stored separately from the participant answer object, using the same per-participant, per-task asset storage pattern as audio and screen recordings.
+ *
  *
  * We can see at a high level that we are given the answer that the user submitted, the start time for the component, and the end time. In addition to this, we have a list of window events. You can find more information about the StoredAnswer object [here](../StoredAnswer).
  */
@@ -61,8 +57,6 @@ export interface ParticipantData {
   searchParams: Record<string, string>;
   /** Metadata of a participant's browser, resolution, language, and IP. */
   metadata: ParticipantMetadata
-  /** Whether the participant has completed the study. */
-  completed: boolean;
   /** Whether the participant has been rejected and the reason. */
   rejected: {
     reason: string;
@@ -76,4 +70,9 @@ export interface ParticipantData {
   conditions?: string[];
   /** Time that the participant registered for the study in epoch milliseconds. */
   createdTime?: number;
+}
+
+export interface ParticipantDataWithStatus extends ParticipantData {
+  /** Whether the participant has completed the study. Derived from sequence assignment status. */
+  completed: boolean;
 }
