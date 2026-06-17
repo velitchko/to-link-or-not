@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProvenanceGraph } from '@trrack/core/graph/graph-slice';
+import type { GetInputPropsReturnType } from '@mantine/form/lib/types';
 import type {
-  Answer, ComponentBlock, ConfigResponseBlockLocation, InterruptionBlock, ParsedStringOption, ParticipantData, ResponseBlockLocation, SkipConditions, StudyConfig, ValueOf,
+  Answer, ComponentBlock, ConfigResponseBlockLocation, CustomResponse, InterruptionBlock, JsonValue, ParsedStringOption, ParticipantData, ResponseBlockLocation, SkipConditions, StudyConfig, ValueOf,
 } from '../parser/types';
 import { type REVISIT_MODE } from '../storage/engines/types';
 
@@ -20,6 +21,7 @@ export interface ParticipantMetadata {
 }
 
 export type TrrackedProvenance = ProvenanceGraph<any, any>;
+export type StoredProvenance = Record<ResponseBlockLocation, TrrackedProvenance | undefined>;
 
 // timestamp, event type, event data
 type FocusEvent = [number, 'focus', string];
@@ -42,7 +44,7 @@ export type TrialValidation = Record<
     belowStimulus: ValidationStatus;
     sidebar: ValidationStatus;
     stimulus: ValidationStatus;
-    provenanceGraph: Record<ResponseBlockLocation, TrrackedProvenance | undefined>;
+    provenanceGraph: StoredProvenance;
   }
 >;
 
@@ -69,7 +71,7 @@ export type TrialValidation = Record<
  */
 export interface StoredAnswer {
   /** Object whose keys are the "id"s in the Response list of the component in the StudyConfig and whose value is the inputted value from the participant. */
-  answer: Record<string, string | number | boolean | string[]>;
+  answer: Record<string, JsonValue>;
   identifier: string;
   componentName: string;
   /** The order of the trial in the sequence. */
@@ -80,8 +82,6 @@ export interface StoredAnswer {
   startTime: number;
   /** Time that the user ended interaction with the component in epoch milliseconds. */
   endTime: number;
-  /** The entire provenance graph exported from a Trrack instance from a React component. This will only be present if you are using React components and you're utilizing [Trrack](https://apps.vdl.sci.utah.edu/trrack) */
-  provenanceGraph: Record<ResponseBlockLocation, TrrackedProvenance | undefined>;
   /**
    * A list containing the time (in epoch milliseconds), the action (focus, input, keypress, mousedown, mouseup, mousemove, resize, scroll or visibility), and then either a coordinate pertaining to where the event took place on the screen or string related to such event. Below is an example of the windowEvents list.
    *
@@ -150,6 +150,30 @@ export interface StimulusParams<T, S = never> {
   setAnswer: ({ status, provenanceGraph, answers }: { status: boolean, provenanceGraph?: TrrackedProvenance, answers: StoredAnswer['answer'] }) => void
 }
 
+export interface CustomResponseField<TValue extends JsonValue = JsonValue> {
+  getInputProps: () => GetInputPropsReturnType;
+  setValue: (value: TValue) => void;
+  onBlur: () => void;
+}
+
+export interface CustomResponseParams<TParameters = Record<string, unknown>, TValue extends JsonValue = JsonValue> {
+  response: CustomResponse;
+  parameters?: TParameters;
+  value: TValue | null;
+  error?: string;
+  disabled: boolean;
+  isAnalysis: boolean;
+  index: number;
+  enumerateQuestions: boolean;
+  field: CustomResponseField<TValue>;
+}
+
+export type CustomResponseValidate<TValue extends JsonValue = JsonValue> = (
+  value: TValue | null,
+  values: StoredAnswer['answer'],
+  response: CustomResponse,
+) => string | null;
+
 export interface Sequence {
   id?: string;
   orderPath: string;
@@ -161,6 +185,7 @@ export interface Sequence {
 }
 
 export type FormElementProvenance = { form: StoredAnswer['answer'] };
+export type AlertModalState = { show: boolean, message: string, title: string };
 export interface StoreState {
   studyId: string;
   participantId: string;
@@ -169,7 +194,7 @@ export interface StoreState {
   config: StudyConfig;
   showStudyBrowser: boolean;
   showHelpText: boolean;
-  alertModal: { show: boolean, message: string, title: string };
+  alertModal: AlertModalState;
   trialValidation: TrialValidation;
   reactiveAnswers: Record<string, ValueOf<StoredAnswer['answer']>>;
   metadata: ParticipantMetadata;
@@ -185,6 +210,7 @@ export interface StoreState {
   rankingAnswers: Record<string, Record<string, string>>;
   funcSequence: Record<string, string[]>;
   completed: boolean;
+  isSubmittingFinal: boolean;
   clickedPrevious: boolean;
   storageEngineFailedToConnect: boolean;
   isStalledConfig: boolean;

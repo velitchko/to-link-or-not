@@ -1,5 +1,12 @@
-export type { ParticipantData } from '../storage/types';
+export type { ParticipantData, ParticipantDataWithStatus } from '../storage/types';
 export type { StoredAnswer, ParticipantMetadata } from '../store/types';
+
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+export interface JsonObject {
+  [key: string]: JsonValue;
+}
+export type JsonArray = JsonValue[];
 
 /**
  * The GlobalConfig is used to generate the list of available studies in the UI.
@@ -231,6 +238,8 @@ export type Styles = {
  *   "autoDownloadStudy": true,
  *   "autoDownloadTime": 5000,
  *   "studyEndMsg": "Thank you for completing this study. You're the best!",
+ *   "studyEndAutoRedirectURL": "https://app.prolific.com/submissions/complete?cc=abc123",
+ *   "studyEndAutoRedirectDelay": 10000,
  *   "windowEventDebounceTime": 500,
  *   "urlParticipantIdParam": "PROLIFIC_ID",
  *   "numSequences": 500
@@ -296,6 +305,10 @@ export interface UIConfig {
   windowEventDebounceTime?: number;
   /** The message to display when the study ends. */
   studyEndMsg?: string;
+  /** The URL which participants will be auto-redirected to when the study ends. The default time before redirecting is 10 seconds, but this can be configured with the studyEndAutoRedirectDelay field. */
+  studyEndAutoRedirectURL?: string;
+  /** The duration after which participants will be auto-redirected to the URL specified in studyEndAutoRedirectURL. Defaults to 10000 milliseconds (10 seconds). */
+  studyEndAutoRedirectDelay?: number;
   /** Controls whether the study data is automatically downloaded at the end of the study. */
   autoDownloadStudy?: boolean;
   /** The time in milliseconds to wait before automatically downloading the study data. */
@@ -807,6 +820,41 @@ export interface ReactiveResponse extends BaseResponse {
 }
 
 /**
+ * The CustomResponse interface is used to define the properties of a response rendered by React code in `src/public`.
+ * This is useful when built-in response types do not fit the interaction you need, but you still want the response to participate in the standard form, validation, provenance, and answer-saving flow.
+ *
+ * Unlike other response assets, the path for a custom response is relative to the `src/public/` folder.
+ * Similar to React stimulus components, we suggest creating a folder named `src/public/{studyName}/assets` to house custom response files for a particular study.
+ * The React component must be the default export from the file. You may also optionally export a named `validate` function from the same module.
+ *
+ * Example:
+ * ```json
+ * {
+ *   "id": "custom-chart-response",
+ *   "type": "custom",
+ *   "prompt": "Use the custom response to select a chart and confidence.",
+ *   "path": "my_study/assets/CustomChartResponse.tsx",
+ *   "parameters": {
+ *     "chartOptions": ["Bar", "Line", "Scatter"]
+ *   },
+ *   "default": {
+ *     "chartType": "Bar",
+ *     "confidence": 70
+ *   }
+ * }
+ * ```
+ */
+export interface CustomResponse extends BaseResponse {
+  type: 'custom';
+  /** The path to the react component. This should be a relative path from the src/public folder. */
+  path: string;
+  /** Parameters passed to the custom response component. */
+  parameters?: Record<string, unknown>;
+  /** The default value of the response. Must be JSON-serializable. */
+  default?: JsonValue;
+}
+
+/**
  * The ButtonsResponse interface is used to define the properties of a buttons response.
  * ButtonsResponses render as a list of buttons that the participant can click. When a button is clicked, the value of the button is stored in the data file.
  * Participants can cycle through the options using the arrow keys.
@@ -894,7 +942,7 @@ export interface DividerResponse extends Omit<BaseResponse, 'prompt' | 'infoText
   withDontKnow?: undefined;
 }
 
-export type Response = NumericalResponse | ShortTextResponse | LongTextResponse | LikertResponse | DropdownResponse | SliderResponse | RadioResponse | CheckboxResponse | RankingResponse | ReactiveResponse | MatrixResponse | ButtonsResponse | TextOnlyResponse | DividerResponse;
+export type Response = NumericalResponse | ShortTextResponse | LongTextResponse | LikertResponse | DropdownResponse | SliderResponse | RadioResponse | CheckboxResponse | RankingResponse | ReactiveResponse | CustomResponse | MatrixResponse | ButtonsResponse | TextOnlyResponse | DividerResponse;
 
 /**
  * The Answer interface is used to define the properties of an answer. Answers are used to define the correct answer for a task. These are generally used in training tasks or if skip logic is required based on the answer.
@@ -981,6 +1029,12 @@ export interface BaseIndividualComponent {
   nextButtonEnableTime?: number;
   /** The time in milliseconds to wait before the next button is disabled. If present, will override the next button disable time setting in the uiConfig. */
   nextButtonDisableTime?: number;
+  /** The time in milliseconds after which the participant is automatically advanced to the next component without saving answers from the current component. */
+  nextButtonAutoAdvanceTime?: number;
+  /** The time in milliseconds before auto-advance when the warning message is shown. Defaults to 30000. */
+  nextButtonAutoAdvanceWarningTime?: number;
+  /** The warning message shown before auto-advance. Include `{seconds}` to interpolate the remaining number and `{unit}` to interpolate `second`/`seconds`. */
+  nextButtonAutoAdvanceWarningMessage?: string;
   /** Whether to show the previous button. If present, will override the previous button setting in the uiConfig. */
   previousButton?: boolean;
   /** The text that is displayed on the previous button. If present, will override the previous button text setting in the uiConfig. */
@@ -1068,8 +1122,8 @@ export interface MarkdownComponent extends BaseIndividualComponent {
  * ```
  *
  * For in depth examples, see the following studies, and their associated codebases.
- * https://revisit.dev/study/demo-react-trrack (https://github.com/revisit-studies/study/tree/v2.4.1/src/public/demo-react-trrack/assets)
- * https://revisit.dev/study/example-brush-interactions (https://github.com/revisit-studies/study/tree/v2.4.1/src/public/example-brush-interactions/assets)
+ * https://revisit.dev/study/demo-react-trrack (https://github.com/revisit-studies/study/tree/v2.4.3/src/public/demo-react-trrack/assets)
+ * https://revisit.dev/study/example-brush-interactions (https://github.com/revisit-studies/study/tree/v2.4.3/src/public/example-brush-interactions/assets)
  */
 export interface ReactComponent extends BaseIndividualComponent {
   type: 'react-component';
@@ -1759,7 +1813,7 @@ export type BaseComponents = Record<string, Partial<IndividualComponent>>;
  * The StudyConfig interface is used to define the properties of a study configuration. This is a JSON object with four main components: the StudyMetadata, the UIConfig, the Components, and the Sequence. Below is the general template that should be followed when constructing a Study configuration file.
  * ```json
  * {
- *   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.4.1/src/parser/StudyConfigSchema.json",
+ *   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.4.3/src/parser/StudyConfigSchema.json",
  *   "studyMetadata": {
  *     ...
  *   },
@@ -1806,7 +1860,7 @@ export interface StudyConfig {
  *
  * ```json
  * {
- *   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.4.1/src/parser/LibraryConfigSchema.json",
+ *   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.4.3/src/parser/LibraryConfigSchema.json",
  *   "baseComponents": {
  *     // BaseComponents here are defined exactly as is in the StudyConfig
  *   },
