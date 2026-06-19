@@ -395,7 +395,14 @@ export default function NodeLinkDiagram({
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: `${WIDTH}px`, margin: '0 auto', position: 'relative' }}>
+    <div
+      style={{
+        fontFamily: 'system-ui, sans-serif',
+        maxWidth: `${WIDTH}px`,
+        margin: '0 auto',
+        position: 'relative',
+      }}
+    >
       <div
         style={{
           padding: '0.75rem 1rem',

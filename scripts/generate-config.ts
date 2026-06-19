@@ -182,81 +182,79 @@ const CONDITION_REMINDERS: Record<Condition, string> = {
   stubs: `${CONDITION_LABELS.stubs}: ${CONDITION_DESCRIPTIONS.stubs}`,
 };
 
+const NASA_TLX_MARKS = Array.from({ length: 21 }, (_, index) => {
+  const value = index * 5;
+  return {
+    label: value === 0 ? 'Low' : value === 100 ? 'High' : '',
+    value,
+  };
+});
+
 function nasaTlxItems(condition: Condition) {
-  const conditionReminder = CONDITION_REMINDERS[condition];
   const dimensions = [
     {
       id: 'mental-demand',
-      label: 'Mental Demand',
-      prompt: 'Mental Demand: How mentally demanding was this condition?',
-      explanation: 'Thinking, deciding, calculating, remembering, looking, and searching.',
-      leftLabel: 'Very Low',
-      rightLabel: 'Very High',
+      prompt: 'Mental Demand',
+      secondaryText: 'How much mental and perceptual effort did you spend?',
+      options: NASA_TLX_MARKS,
+    },
+    {
+      id: 'physical-demand',
+      prompt: 'Physical Demand',
+      secondaryText: 'How much physical effort did you spend?',
+      options: NASA_TLX_MARKS,
     },
     {
       id: 'temporal-demand',
-      label: 'Temporal Demand',
-      prompt: 'Temporal Demand: How hurried or rushed was the pace of the tasks in this condition?',
-      explanation: 'Time pressure from the pace at which the tasks occurred.',
-      leftLabel: 'Very Low',
-      rightLabel: 'Very High',
+      prompt: 'Temporal Demand',
+      secondaryText: 'How much time pressure did you feel in order to complete this?',
+      options: NASA_TLX_MARKS,
     },
     {
       id: 'performance',
-      label: 'Performance',
-      prompt: 'Performance: How successful were you in accomplishing what you were asked to do?',
-      explanation: 'Your own assessment of how well you completed the tasks.',
-      leftLabel: 'Perfect',
-      rightLabel: 'Failure',
+      prompt: 'Performance',
+      secondaryText: 'How successful do you think you were in accomplishing what you were asked to do? (notice the direction of this scale)',
+      options: NASA_TLX_MARKS.map((option) => ({
+        ...option,
+        label: option.value === 0 ? 'Good' : option.value === 100 ? 'Poor' : option.label,
+      })),
     },
     {
       id: 'effort',
-      label: 'Effort',
-      prompt: 'Effort: How hard did you have to work to accomplish your level of performance?',
-      explanation: 'The amount of work required to complete the tasks.',
-      leftLabel: 'Very Low',
-      rightLabel: 'Very High',
+      prompt: 'Effort',
+      secondaryText: 'How hard did you have to work to accomplish your level of performance?',
+      options: NASA_TLX_MARKS,
     },
     {
       id: 'frustration',
-      label: 'Frustration',
-      prompt: 'Frustration: How insecure, discouraged, irritated, stressed, or annoyed were you?',
-      explanation: 'Emotional response while working with this condition.',
-      leftLabel: 'Very Low',
-      rightLabel: 'Very High',
+      prompt: 'Frustration',
+      secondaryText: 'How irritated, stressed, discouraged, and annoyed were you?',
+      options: NASA_TLX_MARKS,
     },
   ];
-  return [
-    {
-      id: `${condition}-tlx-intro`,
-      prompt: `## Workload ratings\n\nPlease rate the workload for this condition: **${conditionReminder}**.
 
-The following NASA-TLX components are grouped together here; each item includes a brief explanation.`,
-      type: 'textOnly',
-    },
-    ...dimensions.map((d) => ({
-      id: `${condition}-${d.id}`,
-      prompt: `${d.prompt}\n\n_${d.explanation}_`,
-      type: 'likert',
-      numItems: 7,
-      leftLabel: d.leftLabel,
-      rightLabel: d.rightLabel,
-      required: true,
-    })),
-    {
-      id: `${condition}-open-comment`,
-      prompt: `Any thoughts about this representation condition (${conditionReminder})?`,
-      type: 'longText',
-      required: false,
-    },
-  ];
+  return dimensions.map((dimension) => ({
+    id: `${condition}-${dimension.id}`,
+    type: 'slider',
+    tlxStyle: true,
+    withBar: false,
+    prompt: dimension.prompt,
+    secondaryText: dimension.secondaryText,
+    options: dimension.options,
+    step: 1,
+    startingValue: 50,
+    required: true,
+  }));
 }
 
 function nasaTlxComponent(condition: Condition): object {
+  const conditionReminder = CONDITION_REMINDERS[condition];
+
   return {
-    type: 'questionnaire',
+    type: 'markdown',
+    path: 'libraries/nasa-tlx/assets/tlx.md',
     response: nasaTlxItems(condition),
-    description: `Condition: ${CONDITION_LABELS[condition]}. ${CONDITION_DESCRIPTIONS[condition]}`,
+    description: `NASA-TLX workload evaluation for ${conditionReminder}`,
   };
 }
 
