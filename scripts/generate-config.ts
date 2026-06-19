@@ -30,17 +30,44 @@ const LFR_CONDITION_DIRS = ['condition_1', 'condition_2', 'condition_3', 'condit
 
 function nodeLinkTrialResponses() {
   return [
-    { id: 'task-answer', prompt: 'Your answer', type: 'reactive' },
-    { id: 'isCorrect', prompt: 'Correct answer?', type: 'reactive', hidden: true, required: false },
-    { id: 'responseTimeMs', prompt: 'Response time (ms)', type: 'reactive', hidden: true, required: false },
-    { id: 'condition', prompt: 'Link visibility condition', type: 'reactive', hidden: true, required: false },
-    { id: 'task', prompt: 'Task', type: 'reactive', hidden: true, required: false },
-    { id: 'graphId', prompt: 'Graph ID', type: 'reactive', hidden: true, required: false },
-    { id: 'selectedNodes', prompt: 'Selected nodes', type: 'reactive', hidden: true, required: false },
-    { id: 'selectedNodeCount', prompt: 'Selected node count', type: 'reactive', hidden: true, required: false },
-    { id: 'groundTruthSnapshot', prompt: 'Ground truth snapshot', type: 'reactive', hidden: true, required: false },
-    { id: 'metrics', prompt: 'Task metrics', type: 'reactive', hidden: true, required: false },
-    { id: 'interactionsUsed', prompt: 'Interactions used', type: 'reactive', hidden: true, required: false },
+    {
+      id: 'task-answer', prompt: 'Your answer', type: 'reactive',
+    },
+    {
+      id: 'isCorrect', prompt: 'Correct answer?', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'responseTimeMs', prompt: 'Response time (ms)', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'condition', prompt: 'Link visibility condition', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'task', prompt: 'Task', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'graphId', prompt: 'Graph ID', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'selectedNodes', prompt: 'Selected nodes', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'selectedNodeCount', prompt: 'Selected node count', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'groundTruthSnapshot', prompt: 'Ground truth snapshot', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'metrics', prompt: 'Task metrics', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'interactionsUsed', prompt: 'Interactions used', type: 'reactive', hidden: true, required: false,
+    },
+    {
+      id: 'study-trial-note',
+      prompt: 'No feedback is shown during real study trials. After submitting, click Next to continue.',
+      type: 'textOnly',
+    },
     {
       id: 'comment',
       prompt: 'Describe your reasoning or mental image of the network.',
@@ -52,7 +79,14 @@ function nodeLinkTrialResponses() {
 }
 
 function nodeLinkTrainingResponses() {
-  return nodeLinkTrialResponses().filter((response) => response.id !== 'comment');
+  return [
+    ...nodeLinkTrialResponses().filter((response) => response.id !== 'comment' && response.id !== 'study-trial-note'),
+    {
+      id: 'training-feedback-note',
+      prompt: 'Training task: after you submit, the diagram will show feedback so you can learn the interaction.',
+      type: 'textOnly',
+    },
+  ];
 }
 
 function getGraphFiles(conditionDir: LfrConditionDir): string[] {
@@ -148,39 +182,79 @@ const CONDITION_REMINDERS: Record<Condition, string> = {
   stubs: `${CONDITION_LABELS.stubs}: ${CONDITION_DESCRIPTIONS.stubs}`,
 };
 
+const NASA_TLX_MARKS = Array.from({ length: 21 }, (_, index) => {
+  const value = index * 5;
+  return {
+    label: value === 0 ? 'Low' : value === 100 ? 'High' : '',
+    value,
+  };
+});
+
 function nasaTlxItems(condition: Condition) {
-  const conditionReminder = CONDITION_REMINDERS[condition];
   const dimensions = [
-    { id: 'mental-demand', label: 'Mental Demand' },
-    { id: 'temporal-demand', label: 'Temporal Demand' },
-    { id: 'performance', label: 'Performance' },
-    { id: 'effort', label: 'Effort' },
-    { id: 'frustration', label: 'Frustration' },
-  ];
-  return [
-    ...dimensions.map((d) => ({
-      id: `${condition}-${d.id}`,
-      prompt: `${d.label}: How much ${d.id.replace('-', ' ')} was required?`,
-      type: 'likert',
-      numItems: 7,
-      leftLabel: 'Very Low',
-      rightLabel: 'Very High',
-      required: true,
-    })),
     {
-      id: `${condition}-open-comment`,
-      prompt: `Any thoughts about this representation condition (${conditionReminder})?`,
-      type: 'longText',
-      required: false,
+      id: 'mental-demand',
+      prompt: 'Mental Demand',
+      secondaryText: 'How much mental and perceptual effort did you spend?',
+      options: NASA_TLX_MARKS,
+    },
+    {
+      id: 'physical-demand',
+      prompt: 'Physical Demand',
+      secondaryText: 'How much physical effort did you spend?',
+      options: NASA_TLX_MARKS,
+    },
+    {
+      id: 'temporal-demand',
+      prompt: 'Temporal Demand',
+      secondaryText: 'How much time pressure did you feel in order to complete this?',
+      options: NASA_TLX_MARKS,
+    },
+    {
+      id: 'performance',
+      prompt: 'Performance',
+      secondaryText: 'How successful do you think you were in accomplishing what you were asked to do? (notice the direction of this scale)',
+      options: NASA_TLX_MARKS.map((option) => ({
+        ...option,
+        label: option.value === 0 ? 'Good' : option.value === 100 ? 'Poor' : option.label,
+      })),
+    },
+    {
+      id: 'effort',
+      prompt: 'Effort',
+      secondaryText: 'How hard did you have to work to accomplish your level of performance?',
+      options: NASA_TLX_MARKS,
+    },
+    {
+      id: 'frustration',
+      prompt: 'Frustration',
+      secondaryText: 'How irritated, stressed, discouraged, and annoyed were you?',
+      options: NASA_TLX_MARKS,
     },
   ];
+
+  return dimensions.map((dimension) => ({
+    id: `${condition}-${dimension.id}`,
+    type: 'slider',
+    tlxStyle: true,
+    withBar: false,
+    prompt: dimension.prompt,
+    secondaryText: dimension.secondaryText,
+    options: dimension.options,
+    step: 1,
+    startingValue: 50,
+    required: true,
+  }));
 }
 
 function nasaTlxComponent(condition: Condition): object {
+  const conditionReminder = CONDITION_REMINDERS[condition];
+
   return {
-    type: 'questionnaire',
+    type: 'markdown',
+    path: 'libraries/nasa-tlx/assets/tlx.md',
     response: nasaTlxItems(condition),
-    description: `Condition: ${CONDITION_LABELS[condition]}. ${CONDITION_DESCRIPTIONS[condition]}`,
+    description: `NASA-TLX workload evaluation for ${conditionReminder}`,
   };
 }
 

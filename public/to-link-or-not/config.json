@@ -112,6 +112,11 @@
           "required": false
         },
         {
+          "id": "study-trial-note",
+          "prompt": "No feedback is shown during real study trials. After submitting, click Next to continue.",
+          "type": "textOnly"
+        },
+        {
           "id": "comment",
           "prompt": "Describe your reasoning or mental image of the network.",
           "type": "longText",
@@ -482,6 +487,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -786,6 +796,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -1090,6 +1105,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -1394,6 +1414,11 @@
           "type": "reactive",
           "hidden": true,
           "required": false
+        },
+        {
+          "id": "training-feedback-note",
+          "prompt": "Training task: after you submit, the diagram will show feedback so you can learn the interaction.",
+          "type": "textOnly"
         }
       ]
     },
@@ -1418,232 +1443,2360 @@
       "response": []
     },
     "nasa-tlx-traditional": {
-      "type": "questionnaire",
+      "type": "markdown",
+      "path": "libraries/nasa-tlx/assets/tlx.md",
       "response": [
         {
           "id": "traditional-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Mental Demand",
+          "secondaryText": "How much mental and perceptual effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
+          "required": true
+        },
+        {
+          "id": "traditional-physical-demand",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Physical Demand",
+          "secondaryText": "How much physical effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "traditional-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Temporal Demand",
+          "secondaryText": "How much time pressure did you feel in order to complete this?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "traditional-performance",
-          "prompt": "Performance: How much performance was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Performance",
+          "secondaryText": "How successful do you think you were in accomplishing what you were asked to do? (notice the direction of this scale)",
+          "options": [
+            {
+              "label": "Good",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "Poor",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "traditional-effort",
-          "prompt": "Effort: How much effort was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Effort",
+          "secondaryText": "How hard did you have to work to accomplish your level of performance?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "traditional-frustration",
-          "prompt": "Frustration: How much frustration was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Frustration",
+          "secondaryText": "How irritated, stressed, discouraged, and annoyed were you?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
-        },
-        {
-          "id": "traditional-open-comment",
-          "prompt": "Any thoughts about this representation condition (Traditional links: All connections are shown as solid lines throughout the task.)?",
-          "type": "longText",
-          "required": false
         }
       ],
-      "description": "Condition: Traditional links. All connections are shown as solid lines throughout the task."
+      "description": "NASA-TLX workload evaluation for Traditional links: All connections are shown as solid lines throughout the task."
     },
     "nasa-tlx-no-link": {
-      "type": "questionnaire",
+      "type": "markdown",
+      "path": "libraries/nasa-tlx/assets/tlx.md",
       "response": [
         {
           "id": "no-link-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Mental Demand",
+          "secondaryText": "How much mental and perceptual effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
+          "required": true
+        },
+        {
+          "id": "no-link-physical-demand",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Physical Demand",
+          "secondaryText": "How much physical effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "no-link-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Temporal Demand",
+          "secondaryText": "How much time pressure did you feel in order to complete this?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "no-link-performance",
-          "prompt": "Performance: How much performance was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Performance",
+          "secondaryText": "How successful do you think you were in accomplishing what you were asked to do? (notice the direction of this scale)",
+          "options": [
+            {
+              "label": "Good",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "Poor",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "no-link-effort",
-          "prompt": "Effort: How much effort was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Effort",
+          "secondaryText": "How hard did you have to work to accomplish your level of performance?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "no-link-frustration",
-          "prompt": "Frustration: How much frustration was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Frustration",
+          "secondaryText": "How irritated, stressed, discouraged, and annoyed were you?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
-        },
-        {
-          "id": "no-link-open-comment",
-          "prompt": "Any thoughts about this representation condition (No links: No connection lines are drawn; use the node positions and layout alone.)?",
-          "type": "longText",
-          "required": false
         }
       ],
-      "description": "Condition: No links. No connection lines are drawn; use the node positions and layout alone."
+      "description": "NASA-TLX workload evaluation for No links: No connection lines are drawn; use the node positions and layout alone."
     },
     "nasa-tlx-on-demand": {
-      "type": "questionnaire",
+      "type": "markdown",
+      "path": "libraries/nasa-tlx/assets/tlx.md",
       "response": [
         {
           "id": "on-demand-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Mental Demand",
+          "secondaryText": "How much mental and perceptual effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
+          "required": true
+        },
+        {
+          "id": "on-demand-physical-demand",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Physical Demand",
+          "secondaryText": "How much physical effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "on-demand-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Temporal Demand",
+          "secondaryText": "How much time pressure did you feel in order to complete this?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "on-demand-performance",
-          "prompt": "Performance: How much performance was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Performance",
+          "secondaryText": "How successful do you think you were in accomplishing what you were asked to do? (notice the direction of this scale)",
+          "options": [
+            {
+              "label": "Good",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "Poor",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "on-demand-effort",
-          "prompt": "Effort: How much effort was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Effort",
+          "secondaryText": "How hard did you have to work to accomplish your level of performance?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "on-demand-frustration",
-          "prompt": "Frustration: How much frustration was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Frustration",
+          "secondaryText": "How irritated, stressed, discouraged, and annoyed were you?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
-        },
-        {
-          "id": "on-demand-open-comment",
-          "prompt": "Any thoughts about this representation condition (On-demand links: Connections are hidden by default and appear only when hovering over a node.)?",
-          "type": "longText",
-          "required": false
         }
       ],
-      "description": "Condition: On-demand links. Connections are hidden by default and appear only when hovering over a node."
+      "description": "NASA-TLX workload evaluation for On-demand links: Connections are hidden by default and appear only when hovering over a node."
     },
     "nasa-tlx-stubs": {
-      "type": "questionnaire",
+      "type": "markdown",
+      "path": "libraries/nasa-tlx/assets/tlx.md",
       "response": [
         {
           "id": "stubs-mental-demand",
-          "prompt": "Mental Demand: How much mental demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Mental Demand",
+          "secondaryText": "How much mental and perceptual effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
+          "required": true
+        },
+        {
+          "id": "stubs-physical-demand",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Physical Demand",
+          "secondaryText": "How much physical effort did you spend?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "stubs-temporal-demand",
-          "prompt": "Temporal Demand: How much temporal demand was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Temporal Demand",
+          "secondaryText": "How much time pressure did you feel in order to complete this?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "stubs-performance",
-          "prompt": "Performance: How much performance was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Performance",
+          "secondaryText": "How successful do you think you were in accomplishing what you were asked to do? (notice the direction of this scale)",
+          "options": [
+            {
+              "label": "Good",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "Poor",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "stubs-effort",
-          "prompt": "Effort: How much effort was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Effort",
+          "secondaryText": "How hard did you have to work to accomplish your level of performance?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
         },
         {
           "id": "stubs-frustration",
-          "prompt": "Frustration: How much frustration was required?",
-          "type": "likert",
-          "numItems": 7,
-          "leftLabel": "Very Low",
-          "rightLabel": "Very High",
+          "type": "slider",
+          "tlxStyle": true,
+          "withBar": false,
+          "prompt": "Frustration",
+          "secondaryText": "How irritated, stressed, discouraged, and annoyed were you?",
+          "options": [
+            {
+              "label": "Low",
+              "value": 0
+            },
+            {
+              "label": "",
+              "value": 5
+            },
+            {
+              "label": "",
+              "value": 10
+            },
+            {
+              "label": "",
+              "value": 15
+            },
+            {
+              "label": "",
+              "value": 20
+            },
+            {
+              "label": "",
+              "value": 25
+            },
+            {
+              "label": "",
+              "value": 30
+            },
+            {
+              "label": "",
+              "value": 35
+            },
+            {
+              "label": "",
+              "value": 40
+            },
+            {
+              "label": "",
+              "value": 45
+            },
+            {
+              "label": "",
+              "value": 50
+            },
+            {
+              "label": "",
+              "value": 55
+            },
+            {
+              "label": "",
+              "value": 60
+            },
+            {
+              "label": "",
+              "value": 65
+            },
+            {
+              "label": "",
+              "value": 70
+            },
+            {
+              "label": "",
+              "value": 75
+            },
+            {
+              "label": "",
+              "value": 80
+            },
+            {
+              "label": "",
+              "value": 85
+            },
+            {
+              "label": "",
+              "value": 90
+            },
+            {
+              "label": "",
+              "value": 95
+            },
+            {
+              "label": "High",
+              "value": 100
+            }
+          ],
+          "step": 1,
+          "startingValue": 50,
           "required": true
-        },
-        {
-          "id": "stubs-open-comment",
-          "prompt": "Any thoughts about this representation condition (Link stubs: Short partial edge stubs show the number and direction of connections without drawing full links.)?",
-          "type": "longText",
-          "required": false
         }
       ],
-      "description": "Condition: Link stubs. Short partial edge stubs show the number and direction of connections without drawing full links."
+      "description": "NASA-TLX workload evaluation for Link stubs: Short partial edge stubs show the number and direction of connections without drawing full links."
     },
     "debrief": {
       "type": "questionnaire",

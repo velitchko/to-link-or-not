@@ -2,9 +2,11 @@
 
 In this block, **no connection lines are drawn**. You will see only the nodes.
 
+**Feedback note:** training tasks provide feedback after you submit. Real study trials in this block do **not** provide correctness feedback; after submitting, click **Next** to continue.
+
 ## What You Will See
 
-- Nodes are displayed as colored circles with labels.
+- Nodes are displayed as colored circles without labels.
 - No lines connect the nodes — the structure is conveyed through spatial layout alone.
 - The positions of nodes reflect the network's connectivity: nodes that are more connected tend to be placed more centrally or closer to the nodes they connect to.
 

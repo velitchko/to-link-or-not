@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 GRAPH_ROOT = Path('public/to-link-or-not/graphs/lfr')
-ALLOWED_LAYOUT_KEYS = {'type', 'algorithm', 'communitySpacing'}
+ALLOWED_LAYOUT_KEYS = {'type', 'algorithm', 'communitySpacing', 'margin'}
 
 
 def load_head(path: Path, ref: str) -> dict[str, Any]:

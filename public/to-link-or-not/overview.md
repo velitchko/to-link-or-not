@@ -24,7 +24,8 @@ Each trial shows a network diagram and asks one of three question types:
 
 - Each trial has no time limit — take as long as you need.
 - Click nodes to select your answer, then press **Submit Answer**.
-- You will see brief feedback after each block.
+- You will get feedback during the short training tasks so you can learn the interaction.
+- During the real study trials, you will **not** receive correctness feedback; after submitting, click **Next** to continue.
 - The entire session takes about **30–45 minutes**.
 
 ## A Few Reminders
