@@ -10,7 +10,16 @@ This study evaluates **four strategies** for showing (or hiding) connections in 
 
 ## Structure of the Study
 
-The study consists of **36 trials** grouped into four blocks. In each block you will use a different link-rendering style. Before each block, a short tutorial explains the style you are about to use.
+You will first complete a short training section, then **36 study trials** grouped into four blocks. Each block uses a different link-rendering style. You will see all four styles during the study:
+
+| Style | What you will see |
+|-------|-------------------|
+| **Traditional links** | All connections are shown as solid lines. |
+| **No links** | Only nodes are shown; use the layout and spatial grouping. |
+| **On-demand links** | Connections are hidden until you hover over a node. |
+| **Link stubs** | Short partial lines show connection counts and directions without drawing full links. |
+
+Before each block, a short reminder explains the style you are about to use.
 
 Each trial shows a network diagram and asks one of three question types:
 
@@ -32,6 +41,7 @@ Each trial shows a network diagram and asks one of three question types:
 
 - Please complete the study in a single sitting in a quiet environment.
 - Use a desktop or laptop browser (not a mobile device).
+- You may take a short break between blocks if you need one.
 - If anything is unclear, click the **?** button at any time.
 
 Click **Next** when you are ready to begin.

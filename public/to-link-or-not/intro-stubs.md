@@ -26,3 +26,5 @@ In this block, connections are shown as **short stubs** — partial lines extend
 - Stubs give directional hints without the visual clutter of full crossing lines.
 
 Click **Next** to start the first trial in this block.
+
+If you need a short break, take it now before starting the block.

@@ -10,13 +10,15 @@ You are invited to participate in a research study examining how different visua
 
 ## What You Will Do
 
-You will view a series of network diagrams and answer questions about each one. The questions fall into three categories:
+You will view a series of network diagrams and answer questions about each one. The study has **36 trials** grouped into four blocks. In each block you will use a different way of showing connections between nodes. Before the study trials, you will complete a short training section so you can learn the interactions.
+
+The questions fall into three categories:
 
 1. **Identifying the most-connected node** in the network
 2. **Finding common neighbors** shared between two highlighted nodes
 3. **Identifying clusters or communities** of nodes
 
-Each diagram will be shown using one of four different visual styles. You will see all four styles across the study.
+During each trial, you will click nodes to select your answer and then submit it. You will receive feedback during training, but not during the real study trials. After each block, you will answer a short strategy question and a workload questionnaire about that block.
 
 ## Participation
 

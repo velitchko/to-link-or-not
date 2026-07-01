@@ -154,6 +154,7 @@ function conditionBlock(conditionDir: LfrConditionDir): { componentDefs: Record<
     components: [
       `intro-${condition}`,
       { order: 'random', numSamples: 3, components: graphGroups },
+      `condition-debrief-${condition}`,
       `nasa-tlx-${condition}`,
     ],
   };
@@ -258,6 +259,24 @@ function nasaTlxComponent(condition: Condition): object {
   };
 }
 
+function conditionDebriefComponent(condition: Condition): object {
+  const conditionReminder = CONDITION_REMINDERS[condition];
+
+  return {
+    type: 'questionnaire',
+    description: `Strategy debrief for ${conditionReminder}`,
+    response: [
+      {
+        id: `${condition}-strategy`,
+        prompt: `For ${CONDITION_LABELS[condition]}, could you step me through exactly how you solved the tasks?`,
+        type: 'longText',
+        placeholder: 'Describe what you looked for, how you made selections, and anything that changed across the three task types.',
+        required: true,
+      },
+    ],
+  };
+}
+
 const allComponentDefs: Record<string, object> = {};
 const conditionInlineBlocks: object[] = [];
 
@@ -280,11 +299,18 @@ const staticComponents: Record<string, object> = {
     type: 'questionnaire',
     response: [
       {
-        id: 'age',
-        prompt: 'What is your age?',
-        type: 'numerical',
-        min: 18,
-        max: 99,
+        id: 'age-group',
+        prompt: 'What is your age group?',
+        type: 'dropdown',
+        options: [
+          '18-24',
+          '25-34',
+          '35-44',
+          '45-54',
+          '55-64',
+          '65 or older',
+          'Prefer not to say',
+        ],
         required: true,
       },
       {
@@ -309,11 +335,11 @@ const staticComponents: Record<string, object> = {
       },
       {
         id: 'vis-experience',
-        prompt: 'How experienced are you with reading network/graph visualizations?',
+        prompt: 'How often do you use or read network/graph visualizations?',
         type: 'likert',
         numItems: 5,
-        leftLabel: 'No experience',
-        rightLabel: 'Expert',
+        leftLabel: '1 - I do not use them at all',
+        rightLabel: '5 - I use them daily',
         required: true,
       },
     ],
@@ -395,6 +421,10 @@ const staticComponents: Record<string, object> = {
     path: `${STUDY_NAME}/intro-stubs.md`,
     response: [],
   },
+  'condition-debrief-traditional': conditionDebriefComponent('traditional'),
+  'condition-debrief-no-link': conditionDebriefComponent('no-link'),
+  'condition-debrief-on-demand': conditionDebriefComponent('on-demand'),
+  'condition-debrief-stubs': conditionDebriefComponent('stubs'),
   'nasa-tlx-traditional': nasaTlxComponent('traditional'),
   'nasa-tlx-no-link': nasaTlxComponent('no-link'),
   'nasa-tlx-on-demand': nasaTlxComponent('on-demand'),
@@ -403,55 +433,10 @@ const staticComponents: Record<string, object> = {
     type: 'questionnaire',
     response: [
       {
-        id: 'preference-1st',
-        prompt: 'Which representation did you find most useful overall?',
-        type: 'dropdown',
-        options: [
-          'Traditional (all links)',
-          'No-link (nodes only)',
-          'On-demand (hover)',
-          'Stubs',
-        ],
-        required: true,
-      },
-      {
-        id: 'preference-least',
-        prompt: 'Which representation did you find least useful overall?',
-        type: 'dropdown',
-        options: [
-          'Traditional (all links)',
-          'No-link (nodes only)',
-          'On-demand (hover)',
-          'Stubs',
-        ],
-        required: true,
-      },
-      {
-        id: 'same-network-twice',
-        prompt: 'Do you think you saw the same network twice?',
-        type: 'radio',
-        options: ['Yes', 'No', 'Not sure'],
-        required: true,
-      },
-      {
-        id: 'unique-datasets-count',
-        prompt: 'How many unique datasets did you see in this experiment?',
-        type: 'numerical',
-        min: 1,
-        max: 60,
-        required: true,
-      },
-      {
-        id: 'task-solving-strategy',
-        prompt: 'Could you step me through exactly how you solved the tasks?',
-        type: 'longText',
-        placeholder: 'Describe what you looked for, what you remembered, and how your strategy changed across tasks or representations.',
-        required: true,
-      },
-      {
         id: 'reflection',
-        prompt: 'Any final thoughts or comments about the representations?',
+        prompt: 'Final thoughts',
         type: 'longText',
+        placeholder: 'Share anything else you noticed about the representations, tasks, or study.',
         required: false,
       },
     ],

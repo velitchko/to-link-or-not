@@ -24,3 +24,5 @@ In this block, connections between nodes are drawn as **solid lines**.
 - For T3 (community detection), look for groups of nodes with more connections inside the group than outside.
 
 Click **Next** to start the first trial in this block.
+
+If you need a short break, take it now before starting the block.

@@ -137,11 +137,18 @@
       "type": "questionnaire",
       "response": [
         {
-          "id": "age",
-          "prompt": "What is your age?",
-          "type": "numerical",
-          "min": 18,
-          "max": 99,
+          "id": "age-group",
+          "prompt": "What is your age group?",
+          "type": "dropdown",
+          "options": [
+            "18-24",
+            "25-34",
+            "35-44",
+            "45-54",
+            "55-64",
+            "65 or older",
+            "Prefer not to say"
+          ],
           "required": true
         },
         {
@@ -172,11 +179,11 @@
         },
         {
           "id": "vis-experience",
-          "prompt": "How experienced are you with reading network/graph visualizations?",
+          "prompt": "How often do you use or read network/graph visualizations?",
           "type": "likert",
           "numItems": 5,
-          "leftLabel": "No experience",
-          "rightLabel": "Expert",
+          "leftLabel": "1 - I do not use them at all",
+          "rightLabel": "5 - I use them daily",
           "required": true
         }
       ]
@@ -1441,6 +1448,58 @@
       "type": "markdown",
       "path": "to-link-or-not/intro-stubs.md",
       "response": []
+    },
+    "condition-debrief-traditional": {
+      "type": "questionnaire",
+      "description": "Strategy debrief for Traditional links: All connections are shown as solid lines throughout the task.",
+      "response": [
+        {
+          "id": "traditional-strategy",
+          "prompt": "For Traditional links, could you step me through exactly how you solved the tasks?",
+          "type": "longText",
+          "placeholder": "Describe what you looked for, how you made selections, and anything that changed across the three task types.",
+          "required": true
+        }
+      ]
+    },
+    "condition-debrief-no-link": {
+      "type": "questionnaire",
+      "description": "Strategy debrief for No links: No connection lines are drawn; use the node positions and layout alone.",
+      "response": [
+        {
+          "id": "no-link-strategy",
+          "prompt": "For No links, could you step me through exactly how you solved the tasks?",
+          "type": "longText",
+          "placeholder": "Describe what you looked for, how you made selections, and anything that changed across the three task types.",
+          "required": true
+        }
+      ]
+    },
+    "condition-debrief-on-demand": {
+      "type": "questionnaire",
+      "description": "Strategy debrief for On-demand links: Connections are hidden by default and appear only when hovering over a node.",
+      "response": [
+        {
+          "id": "on-demand-strategy",
+          "prompt": "For On-demand links, could you step me through exactly how you solved the tasks?",
+          "type": "longText",
+          "placeholder": "Describe what you looked for, how you made selections, and anything that changed across the three task types.",
+          "required": true
+        }
+      ]
+    },
+    "condition-debrief-stubs": {
+      "type": "questionnaire",
+      "description": "Strategy debrief for Link stubs: Short partial edge stubs show the number and direction of connections without drawing full links.",
+      "response": [
+        {
+          "id": "stubs-strategy",
+          "prompt": "For Link stubs, could you step me through exactly how you solved the tasks?",
+          "type": "longText",
+          "placeholder": "Describe what you looked for, how you made selections, and anything that changed across the three task types.",
+          "required": true
+        }
+      ]
     },
     "nasa-tlx-traditional": {
       "type": "markdown",
@@ -3802,59 +3861,10 @@
       "type": "questionnaire",
       "response": [
         {
-          "id": "preference-1st",
-          "prompt": "Which representation did you find most useful overall?",
-          "type": "dropdown",
-          "options": [
-            "Traditional (all links)",
-            "No-link (nodes only)",
-            "On-demand (hover)",
-            "Stubs"
-          ],
-          "required": true
-        },
-        {
-          "id": "preference-least",
-          "prompt": "Which representation did you find least useful overall?",
-          "type": "dropdown",
-          "options": [
-            "Traditional (all links)",
-            "No-link (nodes only)",
-            "On-demand (hover)",
-            "Stubs"
-          ],
-          "required": true
-        },
-        {
-          "id": "same-network-twice",
-          "prompt": "Do you think you saw the same network twice?",
-          "type": "radio",
-          "options": [
-            "Yes",
-            "No",
-            "Not sure"
-          ],
-          "required": true
-        },
-        {
-          "id": "unique-datasets-count",
-          "prompt": "How many unique datasets did you see in this experiment?",
-          "type": "numerical",
-          "min": 1,
-          "max": 60,
-          "required": true
-        },
-        {
-          "id": "task-solving-strategy",
-          "prompt": "Could you step me through exactly how you solved the tasks?",
-          "type": "longText",
-          "placeholder": "Describe what you looked for, what you remembered, and how your strategy changed across tasks or representations.",
-          "required": true
-        },
-        {
           "id": "reflection",
-          "prompt": "Any final thoughts or comments about the representations?",
+          "prompt": "Final thoughts",
           "type": "longText",
+          "placeholder": "Share anything else you noticed about the representations, tasks, or study.",
           "required": false
         }
       ]
@@ -39986,6 +39996,7 @@
                   }
                 ]
               },
+              "condition-debrief-traditional",
               "nasa-tlx-traditional"
             ]
           },
@@ -40119,6 +40130,7 @@
                   }
                 ]
               },
+              "condition-debrief-no-link",
               "nasa-tlx-no-link"
             ]
           },
@@ -40252,6 +40264,7 @@
                   }
                 ]
               },
+              "condition-debrief-on-demand",
               "nasa-tlx-on-demand"
             ]
           },
@@ -40385,6 +40398,7 @@
                   }
                 ]
               },
+              "condition-debrief-stubs",
               "nasa-tlx-stubs"
             ]
           }
