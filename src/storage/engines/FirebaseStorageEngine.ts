@@ -76,13 +76,15 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
     }
-    try {
-      initializeAppCheck(firebaseApp, {
-        provider: new ReCaptchaV3Provider(this.RECAPTCHAV3TOKEN),
-        isTokenAutoRefreshEnabled: false,
-      });
-    } catch {
-      console.warn('Failed to initialize Firebase App Check');
+    if (this.RECAPTCHAV3TOKEN) {
+      try {
+        initializeAppCheck(firebaseApp, {
+          provider: new ReCaptchaV3Provider(this.RECAPTCHAV3TOKEN),
+          isTokenAutoRefreshEnabled: false,
+        });
+      } catch {
+        console.warn('Failed to initialize Firebase App Check');
+      }
     }
   }
 
