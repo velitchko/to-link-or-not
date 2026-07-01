@@ -2,9 +2,11 @@
 
 In this block, connections are **hidden by default** and revealed only when you hover over a node.
 
+**Feedback note:** training tasks provide feedback after you submit. Real study trials in this block do **not** provide correctness feedback; after submitting, click **Next** to continue.
+
 ## What You Will See
 
-- Nodes are displayed as colored circles with labels.
+- Nodes are displayed as colored circles without labels.
 - No lines are visible initially.
 - When you **hover** over a node, all edges connected to that node appear instantly.
 - Moving away from a node hides its edges again.
@@ -26,3 +28,5 @@ In this block, connections are **hidden by default** and revealed only when you 
 Take your time — you can hover as many nodes as you like before submitting.
 
 Click **Next** to start the first trial in this block.
+
+If you need a short break, take it now before starting the block.

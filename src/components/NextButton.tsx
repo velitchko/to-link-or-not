@@ -32,15 +32,29 @@ export function NextButton({
   const nextButtonEnableTime = useMemo(() => config?.nextButtonEnableTime ?? studyConfig.uiConfig.nextButtonEnableTime ?? 0, [config, studyConfig]);
 
   const [timer, setTimer] = useState<number | undefined>(undefined);
-  // Use Date.now() to keep time even if tab is hidden
+  // Count only visible, active page time. Date.now()-only timing keeps running
+  // while the browser is hidden/minimized, which can incorrectly time out a
+  // participant who briefly leaves the tab to take notes.
   useEffect(() => {
-    const start = Date.now();
+    let elapsed = 0;
+    let lastTick = Date.now();
     setTimer(0);
-    const interval = setInterval(() => {
-      setTimer(Date.now() - start);
-    }, 100);
+    const tick = () => {
+      const now = Date.now();
+      if (document.visibilityState === 'visible') {
+        elapsed += now - lastTick;
+        setTimer(elapsed);
+      }
+      lastTick = now;
+    };
+    const interval = setInterval(tick, 100);
+    const handleVisibilityChange = () => {
+      lastTick = Date.now();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

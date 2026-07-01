@@ -2,6 +2,8 @@
 
 In this block, connections are shown as **short stubs** — partial lines extending a short distance from each node toward its neighbors, but not reaching them.
 
+**Feedback note:** training tasks provide feedback after you submit. Real study trials in this block do **not** provide correctness feedback; after submitting, click **Next** to continue.
+
 ## What You Will See
 
 - Every node has short line segments pointing outward in the direction of each of its connections.
@@ -24,3 +26,5 @@ In this block, connections are shown as **short stubs** — partial lines extend
 - Stubs give directional hints without the visual clutter of full crossing lines.
 
 Click **Next** to start the first trial in this block.
+
+If you need a short break, take it now before starting the block.

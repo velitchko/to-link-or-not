@@ -14,12 +14,12 @@ from lfr_to_revisit_graph import LAYOUT_HEIGHT, LAYOUT_MARGIN, LAYOUT_WIDTH, com
 
 GRAPH_ROOT = Path('public/to-link-or-not/graphs/lfr')
 LAYOUT_METADATA = {
-    'type': 'precomputed-force-organic-community-v3',
+    'type': 'precomputed-force-organic-community-v4',
     'width': LAYOUT_WIDTH,
     'height': LAYOUT_HEIGHT,
     'margin': LAYOUT_MARGIN,
     'algorithm': 'static force-organic with moderate community separation and collision spacing',
-    'communitySpacing': 'community-v3-readable-organic',
+    'communitySpacing': 'community-v4-expanded-readable-organic',
 }
 
 
@@ -30,7 +30,7 @@ def strip_coordinates(graph: dict[str, Any]) -> dict[str, Any]:
         node.pop('y', None)
     layout = clone.get('layout')
     if isinstance(layout, dict):
-        for key in ('type', 'algorithm', 'communitySpacing'):
+        for key in ('type', 'algorithm', 'communitySpacing', 'margin'):
             layout.pop(key, None)
     return clone
 

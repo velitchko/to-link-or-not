@@ -2,6 +2,8 @@
 
 In this block, connections between nodes are drawn as **solid lines**.
 
+**Feedback note:** training tasks provide feedback after you submit. Real study trials in this block do **not** provide correctness feedback; after submitting, click **Next** to continue.
+
 ## What You Will See
 
 - Every connection in the network is visible at all times as a line between two nodes.
@@ -22,3 +24,5 @@ In this block, connections between nodes are drawn as **solid lines**.
 - For T3 (community detection), look for groups of nodes with more connections inside the group than outside.
 
 Click **Next** to start the first trial in this block.
+
+If you need a short break, take it now before starting the block.

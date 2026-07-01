@@ -191,27 +191,24 @@ describe('NodeLinkDiagram', () => {
     });
   });
 
-  it('shows a larger node label tooltip in normal participant mode', () => {
+  it('does not show node labels or label tooltips in participant mode', () => {
     const { container } = render(
       <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
     );
     const n2 = Array.from(container.querySelectorAll('circle.node-circle'))
       .find((c) => c.getAttribute('data-node-id') === 'n2')!;
 
+    expect(container.querySelectorAll('text')).toHaveLength(0);
+    expect(container.querySelectorAll('title')).toHaveLength(0);
     expect(screen.queryByTestId('node-label-tooltip')).not.toBeInTheDocument();
     fireEvent.mouseEnter(n2);
 
-    const tooltip = screen.getByTestId('node-label-tooltip');
-    expect(tooltip).toHaveTextContent('B');
-    expect(tooltip.querySelector('text')).toHaveAttribute('font-size', '20');
+    expect(screen.queryByTestId('node-label-tooltip')).not.toBeInTheDocument();
     expect(screen.queryByTestId('debug-adjacency-panel')).not.toBeInTheDocument();
     expect(container.querySelectorAll('g.debug-adjacency-edges line')).toHaveLength(0);
     const n1 = Array.from(container.querySelectorAll('circle.node-circle'))
       .find((c) => c.getAttribute('data-node-id') === 'n1')!;
     expect(n1.getAttribute('stroke')).toBe('white');
-
-    fireEvent.mouseLeave(n2);
-    expect(screen.queryByTestId('node-label-tooltip')).not.toBeInTheDocument();
   });
 
   it('shows adjacent nodes and incident edges in development mode hover', () => {
@@ -226,7 +223,8 @@ describe('NodeLinkDiagram', () => {
 
     fireEvent.mouseEnter(n2);
 
-    expect(screen.getByTestId('node-label-tooltip')).toHaveTextContent('B');
+    expect(screen.queryByTestId('node-label-tooltip')).not.toBeInTheDocument();
+    expect(container.querySelector('circle[data-node-id="n2"] title')).toBeNull();
     expect(screen.getByTestId('debug-adjacency-panel')).toHaveTextContent('B (n2) → A (n1), C (n3)');
     expect(container.querySelectorAll('g.debug-adjacency-edges line')).toHaveLength(2);
     expect(n1.getAttribute('stroke')).toBe('#dc2626');
@@ -235,6 +233,19 @@ describe('NodeLinkDiagram', () => {
 
     fireEvent.mouseLeave(n2);
     expect(screen.queryByTestId('debug-adjacency-panel')).not.toBeInTheDocument();
+  });
+
+  it('keeps labels available only when development mode explicitly enables them', () => {
+    developmentModeEnabled = true;
+    const { container } = render(
+      <NodeLinkDiagram
+        parameters={{ ...makeParams('T1', 'traditional'), showLabels: true }}
+        setAnswer={vi.fn()}
+        answers={{}}
+      />,
+    );
+
+    expect(container.querySelector('circle[data-node-id="n2"] title')).toHaveTextContent('B');
   });
 
   it('renders the InteractionStrip with mode buttons', () => {

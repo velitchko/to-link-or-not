@@ -121,6 +121,7 @@ export interface StudyParameters {
   task: TaskType;
   taskPrompt: string;
   isTraining?: boolean;
+  showLabels?: boolean;
 }
 
 export interface EdgeRendererProps {
