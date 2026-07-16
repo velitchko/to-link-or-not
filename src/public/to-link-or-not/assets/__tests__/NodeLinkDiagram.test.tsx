@@ -235,6 +235,58 @@ describe('NodeLinkDiagram', () => {
     expect(screen.queryByTestId('debug-adjacency-panel')).not.toBeInTheDocument();
   });
 
+  it('outlines the T1 correct answer only in development mode', () => {
+    const { container, rerender } = render(
+      <NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+    expect(container.querySelector('circle[data-node-id="n2"]')?.getAttribute('stroke')).toBe('white');
+
+    developmentModeEnabled = true;
+    rerender(<NodeLinkDiagram parameters={makeParams('T1', 'traditional')} setAnswer={vi.fn()} answers={{}} />);
+
+    expect(container.querySelector('circle[data-node-id="n2"]')?.getAttribute('stroke')).toBe('#16a34a');
+    expect(container.querySelector('circle[data-node-id="n2"]')?.getAttribute('stroke-width')).toBe('4');
+    expect(container.querySelector('circle[data-node-id="n1"]')?.getAttribute('stroke')).toBe('white');
+  });
+
+  it('outlines T2 common-neighbor answers in development mode', () => {
+    developmentModeEnabled = true;
+    const { container } = render(
+      <NodeLinkDiagram parameters={makeParams('T2', 'traditional')} setAnswer={vi.fn()} answers={{}} />,
+    );
+
+    expect(container.querySelector('circle[data-node-id="n2"]')?.getAttribute('stroke')).toBe('#16a34a');
+    expect(container.querySelector('circle[data-node-id="n1"]')?.getAttribute('stroke')).toBe('white');
+    expect(container.querySelector('circle[data-node-id="n3"]')?.getAttribute('stroke')).toBe('white');
+  });
+
+  it('outlines the T3 target community in development mode', () => {
+    developmentModeEnabled = true;
+    const { container } = render(
+      <NodeLinkDiagram
+        parameters={{
+          ...makeParams('T3', 'traditional'),
+          graph: {
+            ...graph,
+            groundTruth: {
+              ...graph.groundTruth,
+              T3: {
+                ...graph.groundTruth.T3,
+                targetCommunity: ['n1', 'n2'],
+              },
+            },
+          },
+        }}
+        setAnswer={vi.fn()}
+        answers={{}}
+      />,
+    );
+
+    expect(container.querySelector('circle[data-node-id="n1"]')?.getAttribute('stroke')).toBe('#16a34a');
+    expect(container.querySelector('circle[data-node-id="n2"]')?.getAttribute('stroke')).toBe('#16a34a');
+    expect(container.querySelector('circle[data-node-id="n3"]')?.getAttribute('stroke')).toBe('white');
+  });
+
   it('keeps labels available only when development mode explicitly enables them', () => {
     developmentModeEnabled = true;
     const { container } = render(

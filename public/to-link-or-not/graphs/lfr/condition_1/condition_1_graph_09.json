@@ -2713,13 +2713,25 @@
   "groundTruth": {
     "T1": {
       "answer": "n120",
-      "rationale": "Highest-degree node in the generated graph; degree=24"
+      "rationale": "Highest-degree node in the generated graph; degree=24",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "n120"
+        }
+      ]
     },
     "T2": {
       "nodeA": "n001",
       "nodeB": "n010",
       "commonNeighbors": [
         "n113"
+      ],
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n113\"]"
+        }
       ]
     },
     "T3": {
@@ -2905,7 +2917,13 @@
         "n114",
         "n118"
       ],
-      "placeholderNode": "n118"
+      "placeholderNode": "n118",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n001\", \"n005\", \"n006\", \"n008\", \"n009\", \"n011\", \"n017\", \"n018\", \"n022\", \"n023\", \"n025\", \"n026\", \"n027\", \"n028\", \"n030\", \"n031\", \"n034\", \"n036\", \"n037\", \"n040\", \"n042\", \"n045\", \"n052\", \"n055\", \"n056\", \"n059\", \"n060\", \"n061\", \"n062\", \"n063\", \"n064\", \"n066\", \"n067\", \"n069\", \"n073\", \"n075\", \"n079\", \"n083\", \"n091\", \"n092\", \"n095\", \"n098\", \"n102\", \"n104\", \"n105\", \"n106\", \"n107\", \"n108\", \"n113\", \"n114\", \"n118\"]"
+        }
+      ]
     }
   },
   "communities": [

@@ -183,13 +183,25 @@
   "groundTruth": {
     "T1": {
       "answer": "hub",
-      "rationale": "Hub node connected to all 11 other nodes"
+      "rationale": "Hub node connected to all 11 other nodes",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "hub"
+        }
+      ]
     },
     "T2": {
       "nodeA": "a0",
       "nodeB": "b0",
       "commonNeighbors": [
         "hub"
+      ],
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"hub\"]"
+        }
       ]
     },
     "T3": {
@@ -209,6 +221,22 @@
           "b4",
           "b5"
         ]
+      ],
+      "targetCommunityIndex": 1,
+      "targetCommunity": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ],
+      "placeholderNode": "b2",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"b0\", \"b1\", \"b2\", \"b3\", \"b4\", \"b5\"]"
+        }
       ]
     }
   },

@@ -26,6 +26,7 @@ const WIDTH = 800;
 const HEIGHT = 560;
 const NODE_RADIUS = 10;
 const DEBUG_ADJACENCY_COLOR = '#dc2626';
+const DEV_CORRECT_ANSWER_COLOR = '#16a34a';
 
 const EDGE_RENDERERS: Record<Condition, React.FC<EdgeRendererProps>> = {
   traditional: TraditionalRenderer,
@@ -184,6 +185,23 @@ function getAdjacentNodeIds(nodeId: string | null, edges: StudyParameters['graph
   }));
 }
 
+function getCorrectAnswerNodeIds(task: StudyParameters['task'], graph: StudyParameters['graph']): string[] {
+  if (task === 'T1') return [graph.groundTruth.T1.answer];
+  if (task === 'T2') return sortedUnique(graph.groundTruth.T2.commonNeighbors);
+
+  if (graph.groundTruth.T3.targetCommunity) return sortedUnique(graph.groundTruth.T3.targetCommunity);
+  const sortedCommunities = graph.groundTruth.T3.communities.map((community) => sortedUnique(community));
+  const largestCommunity = sortedCommunities
+    .map((community, index) => ({ community, index }))
+    .reduce((best, current) => {
+      if (current.community.length !== best.community.length) {
+        return current.community.length > best.community.length ? current : best;
+      }
+      return current.community.join(' ') > best.community.join(' ') ? current : best;
+    });
+  return largestCommunity.community;
+}
+
 export default function NodeLinkDiagram({
   parameters,
   setAnswer,
@@ -260,6 +278,10 @@ export default function NodeLinkDiagram({
   const debugAdjacentNodeSet = useMemo(
     () => new Set(debugAdjacentNodeIds),
     [debugAdjacentNodeIds],
+  );
+  const developmentCorrectAnswerNodeSet = useMemo(
+    () => (developmentModeEnabled ? new Set(getCorrectAnswerNodeIds(task, graph)) : new Set<string>()),
+    [developmentModeEnabled, task, graph],
   );
   const debugIncidentEdges = useMemo(
     () => (developmentModeEnabled && hoveredNode
@@ -484,8 +506,18 @@ export default function NodeLinkDiagram({
                       cy={node.y}
                       r={NODE_RADIUS}
                       fill={getNodeFill(node.id)}
-                      stroke={debugAdjacentNodeSet.has(node.id) ? DEBUG_ADJACENCY_COLOR : hoveredNode === node.id ? '#fbbf24' : 'white'}
-                      strokeWidth={debugAdjacentNodeSet.has(node.id) || hoveredNode === node.id ? 3 : 2}
+                      stroke={debugAdjacentNodeSet.has(node.id)
+                        ? DEBUG_ADJACENCY_COLOR
+                        : hoveredNode === node.id
+                          ? '#fbbf24'
+                          : developmentCorrectAnswerNodeSet.has(node.id)
+                            ? DEV_CORRECT_ANSWER_COLOR
+                            : 'white'}
+                      strokeWidth={debugAdjacentNodeSet.has(node.id) || hoveredNode === node.id
+                        ? 3
+                        : developmentCorrectAnswerNodeSet.has(node.id)
+                          ? 4
+                          : 2}
                       style={{
                         cursor: getNodeCursor(node.id, anchorNodes, mode, submitted),
                         transition: 'fill 0.1s',

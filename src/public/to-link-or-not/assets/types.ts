@@ -3,6 +3,11 @@ export type TaskType = 'T1' | 'T2' | 'T3';
 export type InteractionMode = 'select' | 'lasso' | 'pan';
 export type FeedbackColor = 'correct' | 'wrong' | 'missed' | `community-${number}`;
 
+export interface RevisitCorrectAnswer {
+  id: string;
+  answer: string;
+}
+
 export interface GraphNode {
   id: string;
   label?: string;
@@ -23,12 +28,14 @@ export interface PositionedNode extends GraphNode {
 export interface GroundTruthT1 {
   answer: string; // id of the highest-degree node
   rationale: string;
+  correctAnswer?: RevisitCorrectAnswer[];
 }
 
 export interface GroundTruthT2 {
   nodeA: string; // id of first highlighted node
   nodeB: string; // id of second highlighted node
   commonNeighbors: string[];
+  correctAnswer?: RevisitCorrectAnswer[];
 }
 
 export interface GroundTruthT3 {
@@ -36,6 +43,7 @@ export interface GroundTruthT3 {
   targetCommunityIndex?: number; // largest embedded LFR community for exact T3 scoring
   targetCommunity?: string[];
   placeholderNode?: string;
+  correctAnswer?: RevisitCorrectAnswer[];
 }
 
 export interface T1AnswerMetrics {
