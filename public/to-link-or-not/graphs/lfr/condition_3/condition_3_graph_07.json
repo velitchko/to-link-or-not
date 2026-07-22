@@ -3185,13 +3185,25 @@
   "groundTruth": {
     "T1": {
       "answer": "n120",
-      "rationale": "Highest-degree node in the generated graph; degree=26"
+      "rationale": "Highest-degree node in the generated graph; degree=26",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "n120"
+        }
+      ]
     },
     "T2": {
       "nodeA": "n001",
       "nodeB": "n021",
       "commonNeighbors": [
         "n080"
+      ],
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n080\"]"
+        }
       ]
     },
     "T3": {
@@ -3325,44 +3337,50 @@
           "n115"
         ]
       ],
-      "targetCommunityIndex": 0,
+      "targetCommunityIndex": 1,
       "targetCommunity": [
-        "n001",
-        "n005",
-        "n006",
-        "n007",
-        "n014",
-        "n016",
-        "n019",
-        "n028",
-        "n029",
-        "n030",
-        "n033",
-        "n036",
-        "n042",
-        "n043",
-        "n047",
-        "n057",
-        "n061",
-        "n062",
-        "n065",
-        "n076",
-        "n079",
-        "n080",
-        "n082",
-        "n085",
-        "n088",
-        "n090",
-        "n093",
-        "n096",
-        "n098",
-        "n100",
-        "n108",
-        "n110",
-        "n117",
-        "n119"
+        "n003",
+        "n008",
+        "n012",
+        "n013",
+        "n015",
+        "n018",
+        "n021",
+        "n031",
+        "n037",
+        "n039",
+        "n040",
+        "n041",
+        "n044",
+        "n050",
+        "n052",
+        "n053",
+        "n055",
+        "n060",
+        "n068",
+        "n071",
+        "n081",
+        "n083",
+        "n084",
+        "n086",
+        "n087",
+        "n092",
+        "n094",
+        "n097",
+        "n099",
+        "n101",
+        "n104",
+        "n105",
+        "n114",
+        "n118"
       ],
-      "placeholderNode": "n119"
+      "placeholderNode": "n118",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n003\", \"n008\", \"n012\", \"n013\", \"n015\", \"n018\", \"n021\", \"n031\", \"n037\", \"n039\", \"n040\", \"n041\", \"n044\", \"n050\", \"n052\", \"n053\", \"n055\", \"n060\", \"n068\", \"n071\", \"n081\", \"n083\", \"n084\", \"n086\", \"n087\", \"n092\", \"n094\", \"n097\", \"n099\", \"n101\", \"n104\", \"n105\", \"n114\", \"n118\"]"
+        }
+      ]
     }
   },
   "communities": [

@@ -9,6 +9,7 @@ const CONFIG_OUT = path.join(process.cwd(), 'public', STUDY_NAME, 'config.json')
 
 type Condition = 'traditional' | 'no-link' | 'on-demand' | 'stubs';
 type TaskType = 'T1' | 'T2' | 'T3';
+type RevisitCorrectAnswer = { id: string; answer: string };
 
 type LfrConditionDir = 'condition_1' | 'condition_2' | 'condition_3' | 'condition_4';
 
@@ -102,6 +103,15 @@ function loadGraph(graphRelPath: string): Record<string, unknown> {
   return JSON.parse(fs.readFileSync(absPath, 'utf-8'));
 }
 
+function correctAnswerForTask(graph: Record<string, unknown>, task: TaskType): RevisitCorrectAnswer[] {
+  const groundTruth = graph.groundTruth as Record<TaskType, { correctAnswer?: RevisitCorrectAnswer[] }> | undefined;
+  const correctAnswer = groundTruth?.[task]?.correctAnswer;
+  if (!correctAnswer) {
+    throw new Error(`Missing ReVISit correctAnswer metadata for ${String(graph.id)} ${task}`);
+  }
+  return correctAnswer;
+}
+
 function graphPlaceholder(graphRelPath: string): object {
   const graph = loadGraph(graphRelPath);
   return {
@@ -114,6 +124,7 @@ function graphPlaceholder(graphRelPath: string): object {
 }
 
 function trialComponent(graphRelPath: string, task: TaskType, condition: Condition) {
+  const graph = loadGraph(graphRelPath);
   const graphId = path.basename(graphRelPath, '.json');
   const key = `${condition}-${task}-${graphId}`;
   return {
@@ -127,6 +138,7 @@ function trialComponent(graphRelPath: string, task: TaskType, condition: Conditi
         taskPrompt: TASK_PROMPTS[task],
         graphPath: graphRelPath,
       },
+      correctAnswer: correctAnswerForTask(graph, task),
     },
   };
 }
@@ -360,6 +372,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] Traditional view: all connections shown as lines. Which node looks most connected?',
       isTraining: true,
     },
+    correctAnswer: correctAnswerForTask(trainingGraphData, 'T1'),
     response: nodeLinkTrainingResponses(),
   },
   'training-no-link': {
@@ -373,6 +386,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] No-link view: only nodes shown. Which node looks most important?',
       isTraining: true,
     },
+    correctAnswer: correctAnswerForTask(trainingGraphData, 'T1'),
     response: nodeLinkTrainingResponses(),
   },
   'training-on-demand': {
@@ -386,6 +400,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] On-demand view: hover over a node to see its connections. Which node looks most connected?',
       isTraining: true,
     },
+    correctAnswer: correctAnswerForTask(trainingGraphData, 'T1'),
     response: nodeLinkTrainingResponses(),
   },
   'training-stubs': {
@@ -399,6 +414,7 @@ const staticComponents: Record<string, object> = {
       taskPrompt: '[TRAINING] Stub view: short lines indicate connections. Which node has most stubs?',
       isTraining: true,
     },
+    correctAnswer: correctAnswerForTask(trainingGraphData, 'T1'),
     response: nodeLinkTrainingResponses(),
   },
   'intro-traditional': {

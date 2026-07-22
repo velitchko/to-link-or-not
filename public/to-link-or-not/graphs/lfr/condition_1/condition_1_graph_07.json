@@ -2641,13 +2641,25 @@
   "groundTruth": {
     "T1": {
       "answer": "n120",
-      "rationale": "Highest-degree node in the generated graph; degree=24"
+      "rationale": "Highest-degree node in the generated graph; degree=24",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "n120"
+        }
+      ]
     },
     "T2": {
       "nodeA": "n004",
       "nodeB": "n044",
       "commonNeighbors": [
         "n102"
+      ],
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n102\"]"
+        }
       ]
     },
     "T3": {
@@ -2783,40 +2795,46 @@
           "n120"
         ]
       ],
-      "targetCommunityIndex": 1,
+      "targetCommunityIndex": 3,
       "targetCommunity": [
-        "n002",
-        "n003",
-        "n005",
-        "n029",
-        "n033",
-        "n035",
-        "n036",
-        "n037",
-        "n040",
-        "n044",
-        "n046",
-        "n048",
-        "n052",
-        "n054",
-        "n057",
-        "n060",
-        "n070",
-        "n071",
-        "n072",
-        "n093",
-        "n094",
-        "n102",
-        "n104",
-        "n105",
-        "n107",
-        "n110",
-        "n112",
-        "n116",
-        "n117",
-        "n119"
+        "n011",
+        "n015",
+        "n021",
+        "n023",
+        "n034",
+        "n039",
+        "n041",
+        "n047",
+        "n050",
+        "n056",
+        "n059",
+        "n061",
+        "n065",
+        "n068",
+        "n074",
+        "n078",
+        "n082",
+        "n083",
+        "n086",
+        "n089",
+        "n091",
+        "n095",
+        "n096",
+        "n099",
+        "n100",
+        "n106",
+        "n108",
+        "n109",
+        "n114",
+        "n115"
       ],
-      "placeholderNode": "n119"
+      "placeholderNode": "n115",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n011\", \"n015\", \"n021\", \"n023\", \"n034\", \"n039\", \"n041\", \"n047\", \"n050\", \"n056\", \"n059\", \"n061\", \"n065\", \"n068\", \"n074\", \"n078\", \"n082\", \"n083\", \"n086\", \"n089\", \"n091\", \"n095\", \"n096\", \"n099\", \"n100\", \"n106\", \"n108\", \"n109\", \"n114\", \"n115\"]"
+        }
+      ]
     }
   },
   "communities": [

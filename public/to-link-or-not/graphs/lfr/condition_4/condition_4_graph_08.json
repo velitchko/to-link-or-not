@@ -2913,13 +2913,25 @@
   "groundTruth": {
     "T1": {
       "answer": "n120",
-      "rationale": "Highest-degree node in the generated graph; degree=25"
+      "rationale": "Highest-degree node in the generated graph; degree=25",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "n120"
+        }
+      ]
     },
     "T2": {
       "nodeA": "n005",
       "nodeB": "n039",
       "commonNeighbors": [
         "n108"
+      ],
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n108\"]"
+        }
       ]
     },
     "T3": {
@@ -3087,7 +3099,13 @@
         "n101",
         "n109"
       ],
-      "placeholderNode": "n109"
+      "placeholderNode": "n109",
+      "correctAnswer": [
+        {
+          "id": "task-answer",
+          "answer": "[\"n005\", \"n006\", \"n007\", \"n008\", \"n013\", \"n020\", \"n023\", \"n029\", \"n035\", \"n043\", \"n047\", \"n052\", \"n054\", \"n056\", \"n060\", \"n061\", \"n063\", \"n068\", \"n069\", \"n074\", \"n075\", \"n076\", \"n085\", \"n087\", \"n091\", \"n093\", \"n099\", \"n101\", \"n109\"]"
+        }
+      ]
     }
   },
   "communities": [

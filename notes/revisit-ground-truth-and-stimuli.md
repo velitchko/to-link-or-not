@@ -9,6 +9,26 @@ Generated on 2026-06-16 for the active LFR graph pools under `public/to-link-or-
 - Metadata generator: `scripts/revisit/generate_task_metadata.py`
 - Stimuli review generator: `scripts/revisit/generate_stimuli_review.py`
 
+## ReVISit correct-answer metadata
+
+ReVISit's config schema expects component-level correct answers under:
+
+```json
+"correctAnswer": [{ "id": "task-answer", "answer": "..." }]
+```
+
+The `id` must match a response id. For this study that is the reactive response
+`task-answer`. Because `NodeLinkDiagram` stores T1 as a node-id string and T2/T3
+as JSON-stringified node arrays, the generated `answer` values use those exact
+runtime values.
+
+Each graph JSON stores the same ReVISit-shaped array under
+`groundTruth.T1.correctAnswer`, `groundTruth.T2.correctAnswer`, and
+`groundTruth.T3.correctAnswer`. `scripts/generate-config.ts` copies the relevant
+task array onto every generated trial component and all four training components.
+ReVISit itself reads the component-level `correctAnswer`; the graph-level copy is
+the reproducible source for regeneration.
+
 ## Task semantics
 
 - T1 correct answer is computed with NetworkX as the node with maximum degree. Ties are broken by highest node id to match the existing embedded generator output.
@@ -25,7 +45,8 @@ Generated on 2026-06-16 for the active LFR graph pools under `public/to-link-or-
 ## How to regenerate
 
 ```bash
-uv run --with networkx scripts/revisit/generate_task_metadata.py
+uv run scripts/revisit/generate_task_metadata.py
+uv run scripts/revisit/generate_task_metadata.py --check
 python scripts/revisit/generate_stimuli_review.py
 npx tsx scripts/generate-config.ts
 ```
