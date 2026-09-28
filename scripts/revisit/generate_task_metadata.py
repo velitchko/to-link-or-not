@@ -85,7 +85,9 @@ def choose_t3_largest_community(data: dict, graph: nx.Graph) -> tuple[int, list[
 def revisit_answer(task_answer: str | list[str]) -> list[dict[str, Any]]:
     # NodeLinkDiagram stores T2/T3 task-answer values as JSON strings, so the
     # component-level ReVISit correctAnswer must match that exact runtime value.
-    answer = task_answer if isinstance(task_answer, str) else json.dumps(sorted_nodes(task_answer))
+    # Match JavaScript JSON.stringify exactly: ReVISit compares reactive answers
+    # as strings, so Python's default separator whitespace changes correctness.
+    answer = task_answer if isinstance(task_answer, str) else json.dumps(sorted_nodes(task_answer), separators=(",", ":"))
     return [{"id": RESPONSE_ID, "answer": answer}]
 
 
