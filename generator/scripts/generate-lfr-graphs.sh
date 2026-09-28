@@ -4,20 +4,20 @@ set -euo pipefail
 # Generate LFR benchmark graphs for the "To Link or Not" study.
 #
 # Output filenames:
-#   public/to-link-or-not/graphs/lfr/condition_1_graph_01.json
+#   generator/data/condition_1/condition_1_graph_01.json
 #   ...
-#   public/to-link-or-not/graphs/lfr/condition_4_graph_15.json
+#   generator/data/condition_4/condition_4_graph_15.json
 #
 # This script uses Andrea Lancichinetti's maintained LFR benchmark code:
 #   https://github.com/andrealancichinetti/LFRbenchmarks
 #
 # Dependencies: git, make, g++, python3
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VENDOR_DIR="${ROOT_DIR}/.cache/LFRbenchmarks"
+GENERATOR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VENDOR_DIR="${GENERATOR_DIR}/lfr/.cache/LFRbenchmarks"
 BENCH_DIR="${VENDOR_DIR}/unweighted_undirected"
-OUT_DIR="${ROOT_DIR}/public/to-link-or-not/graphs/lfr"
-WORK_DIR="${ROOT_DIR}/.cache/lfr-runs"
+OUT_DIR="${GENERATOR_DIR}/data"
+WORK_DIR="${GENERATOR_DIR}/lfr/.cache/lfr-runs"
 GRAPHS_PER_CONDITION=15
 
 # Tiny parameter differences by condition. Tune these here.
@@ -60,7 +60,7 @@ convert_to_json() {
   local run_dir="$5"
   local out_file="$6"
 
-  python3 "${ROOT_DIR}/scripts/lfr/lfr_to_revisit_graph.py" \
+  python3 "${GENERATOR_DIR}/scripts/lfr/lfr_to_revisit_graph.py" \
     --graph-id "${graph_id}" \
     --condition "${condition}" \
     --index "${index}" \
@@ -110,11 +110,11 @@ main() {
 
       params_json="{\"N\":${N},\"k\":${K},\"maxk\":${MAXK},\"mu\":${MU},\"minc\":${MINC},\"maxc\":${MAXC},\"t1\":${T1},\"t2\":${T2},\"on\":${ON},\"om\":${OM},\"seed\":${seed}}"
       convert_to_json "${graph_id}" "${condition}" "${idx}" "${params_json}" "${run_dir}" "${condition_dir}/${graph_id}.json"
-      echo "Written: ${condition_dir#${ROOT_DIR}/}/${graph_id}.json"
+      echo "Written: ${condition_dir#${GENERATOR_DIR}/}/${graph_id}.json"
     done
   done
 
-  echo "Done. Generated $((4 * GRAPHS_PER_CONDITION)) LFR graphs in ${OUT_DIR#${ROOT_DIR}/}."
+  echo "Done. Generated $((4 * GRAPHS_PER_CONDITION)) LFR graphs in ${OUT_DIR#${GENERATOR_DIR}/}."
 }
 
 main "$@"
